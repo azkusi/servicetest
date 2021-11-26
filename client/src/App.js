@@ -5,10 +5,11 @@ const { io } = require("socket.io-client");
 
 
 var subdomain;
+const port = process.env.PORT || 5000;
 
 function App() {
   const socket = io();
-  socket.connect("http://localhost:5000");
+  socket.connect(`http://localhost:${port}`);
   const [storename, setStorename] = useState('');
   socket.on("subdomain", (data)=>{
     subdomain = data.hostname
