@@ -51,8 +51,8 @@ app.use('/', function(req, res, next){
     io.on("connection", function (socket) {
       console.log(`Made socket connection, socket is ${socket.id}`);
       console.log(`Hostname: ${INChostname}`);
-      io.emit("subdomain", {"socket id": socket.id, "hostname": INChostname.replace('.localhost', ''), "details": store_front_content});
-      // io.emit("subdomain", {"socket id": socket.id, "hostname": INChostname.replace('.myservvio.com', ''), "details": store_front_content});
+      //io.emit("subdomain", {"socket id": socket.id, "hostname": INChostname.replace('.localhost', ''), "details": store_front_content});
+      io.emit("subdomain", {"socket id": socket.id, "hostname": INChostname.replace('.myservviio.com', ''), "details": store_front_content});
       setTimeout(() => socket.disconnect(true), 1000);
 
     });
