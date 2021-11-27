@@ -21,15 +21,15 @@ function App() {
     storeContent = data["details"]
     console.log("store details are: " + JSON.stringify(data["details"]))
     //storeTitle = data.details["page_title"];
-    storeDescription = data.details["description"]
-    setStorename(data.hostname) 
-    setStoreTitle(data.details["page_title"]) 
+    storeDescription = data.details["description"];
+    setStorename(data.hostname);
+    setStoreTitle(data.details["page_title"]);
     console.log(`data sent is ${JSON.stringify(data)}`);
     console.log(`store title is ${storeTitle}`);
   })
 
   useEffect(() => {
-    document.title = storeTitle
+    document.title = storeTitle;
   }, [])
 
   // socket.on("connection", function (socket) {
