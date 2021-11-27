@@ -10,9 +10,11 @@ var storeContent;
 var storeDescription;
 var storeTitle;
 
+
 const port = process.env.PORT || 5000;
 
 function App() {
+  
   const socket = io();
   socket.connect(`http://localhost:${port}`);
   const [storename, setStorename] = useState('');
@@ -23,10 +25,13 @@ function App() {
     storeContent = data["details"]
     console.log("store details are: " + JSON.stringify(data["details"]))
     //storeTitle = data.details["page_title"];
+
+    //make sure these store details set by variable use come before
+    //the store details set by useState()->e.g.setStorename
+    storeTitle = data.details["page_title"];
     storeDescription = data.details["description"]
     setStorename(data.hostname) 
     //setStoreTitle(data.details["page_title"]) 
-    storeTitle = data.details["page_title"];
     console.log(`data sent is ${JSON.stringify(data)}`);
     console.log(`store title is ${storeTitle}`);
     document.title = data.details["page_title"];
