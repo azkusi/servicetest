@@ -1,21 +1,10 @@
-//import logo from './logo.svg';
-import Home from './store_pages/Home'
-import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
-import Lost from './store_pages/404_error';
-import './App.css';
 import React, {useState, useEffect} from 'react';
-import Bookings from './store_pages/Bookings';
-import Gallery from './store_pages/Gallery';
-import Services from './store_pages/Services';
-
 const { io } = require("socket.io-client");
 const axios = require('axios');
 
-
-
 const port = process.env.PORT || 5000;
 
-function App() {
+const Services = ({ bookings_events }) => {
 
   const [content, setContent] = useState(null);
   const [isPending, setIsPending] = useState(true);
@@ -56,32 +45,12 @@ function App() {
 
   }, [])
 
-
-  return (
-    <Router>
-      <Switch>
-        <Route exact path="/">
-          <div className="home">
-            { isPending && <div>Loading...</div> }
-            {content && <Home serviceContent={content} />}
-          </div>
-        </Route>
-        <Route exact path="/new">
-          <Lost />
-        </Route>
-        <Route exact path="/services">
-          <Services />
-        </Route>
-        <Route exact path="/bookings">
-          <Bookings />
-        </Route>
-        <Route exact path="/gallery">
-          <Gallery />
-        </Route>
-      </Switch>
-    </Router>
-    
-  );
-}
-
-export default App;
+    return (
+      <div className="Services">
+          { isPending && <div>Loading...</div> }
+          {content && <h1> {content.service_provider_name}'s offered services - React page </h1>}
+      </div>
+    );
+  }
+   
+  export default Services;
