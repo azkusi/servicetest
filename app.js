@@ -47,12 +47,12 @@ app.use('*', function(req, res, next){
       if("Error" in storeContent.data){
         if(storeContent.data["Error"] == "Unknown_Provider_Name"){
           console.log("Unknown provider name searched")
-          res.redirect("http://google.com")
+          res.sendFile(path.join(__dirname, "./client/public", "404.html"));
           return null;
         }
         else{
           console.log("Other error check logs")
-          res.sendFile(path.join(__dirname, "client", "public", "404.html"));
+          res.sendFile(path.join(__dirname, "./client/public", "404.html"));
           res.end()
           return null;
         }
