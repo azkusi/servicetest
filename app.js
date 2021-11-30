@@ -22,9 +22,10 @@ app.use(cors());
 
 app.use('*', function(req, res, next){
   console.log("hostname is: " + req.hostname)
-  if(req.hostname === "servicetest-env.eba-nat7bnps.eu-west-2.elasticbeanstalk.com" || req.hostname === "172.31.19.33" ){
-    res.sendFile(path.join(__dirname, "client", "public", "404.html"));
-    res.end();
+   if(req.hostname === "servicetest-env.eba-nat7bnps.eu-west-2.elasticbeanstalk.com" || req.hostname === "172.31.19.33" ){
+  //if(req.hostname == "hello.localhost"){
+    res.sendFile(path.join(__dirname, "./client/public", "404.html"));
+    //res.end();
     return null;
   }
   else{
