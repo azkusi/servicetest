@@ -25,7 +25,7 @@ app.use('*', function(req, res, next){
   storename = req.hostname.replace('.myservviio.com', '')
   //storename = req.hostname.replace('.localhost', '')
 
-  console.log(`hello here works in middleware req.data: ${req}, hostname: ${req.hostname}, subdomain is: ${(req.subdomains)}`);
+  //console.log(`hello here works in middleware req.data: ${req}, hostname: ${req.hostname}, subdomain is: ${(req.subdomains)}`);
 
   const data = {"store_name": storename}
   
