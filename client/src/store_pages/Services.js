@@ -49,6 +49,12 @@ const Services = ({ bookings_events }) => {
       <div className="Services">
           { isPending && <div>Loading...</div> }
           {content && <h1> {content.service_provider_name}'s offered services - React page </h1>}
+          <br></br>
+          <h3>More content</h3>
+          <br></br>
+          <h3>More content</h3>
+          <br></br>
+          <h3>More content</h3>
       </div>
     );
   }

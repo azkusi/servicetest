@@ -49,7 +49,12 @@ const Gallery = ({ bookings_events }) => {
       <div className="Gallery">
           { isPending && <div>Loading...</div> }
           {content && <h1> {content.service_provider_name}'s Gallery of images - React page </h1>}
-          
+          <br></br>
+          <h3>More content</h3>
+          <br></br>
+          <h3>More content</h3>
+          <br></br>
+          <h3>More content</h3>
       </div>
     );
   }

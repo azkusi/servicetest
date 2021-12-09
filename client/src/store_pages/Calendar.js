@@ -4,7 +4,7 @@ const axios = require('axios');
 
 const port = process.env.PORT || 5000;
 
-const Bookings = ({ bookings_events }) => {
+const Calendar = ({ bookings_events }) => {
 
   const [content, setContent] = useState(null);
   const [isPending, setIsPending] = useState(true);
@@ -46,11 +46,17 @@ const Bookings = ({ bookings_events }) => {
   }, [])
 
     return (
-      <div className="Bookings">
+      <div className="Calendar">
           { isPending && <div>Loading...</div> }
-          {content && <h1> {content.service_provider_name}'s booking's events - React page </h1>}
+          {content && <h1> {content.service_provider_name}'s calendar events - React page </h1>}
+          <br></br>
+          <h3>More content</h3>
+          <br></br>
+          <h3>More content</h3>
+          <br></br>
+          <h3>More content</h3>
       </div>
     );
   }
    
-  export default Bookings;
+  export default Calendar;
