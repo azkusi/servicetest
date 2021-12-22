@@ -44,7 +44,7 @@ function Messages ({ serviceContent }) {
       const convoref = db.collection('serviceProviders').doc(serviceContent.service_provider_name).collection('conversations').doc()
       const convorefID = convoref.id
       console.log("convorefID is: " + convorefID)
-      await convoref.set({"last_message_sent": "heyheyhey"})
+      await convoref.set({"last_message_sent": messageSent})
       await db.collection('serviceProviders').doc(serviceContent.service_provider_name).collection('conversations').doc(convorefID).collection('messages').add({"message": messageSent, "name": nameSent, "email": emailSent})
 
     }
