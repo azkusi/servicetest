@@ -41,7 +41,7 @@ app.use('*', function(req, res, next){
     
     //firebase
     console.log("Store name being sent to firebase is: " + storename)
-    axios.post("https://us-central1-dashtest-7cb07.cloudfunctions.net/checkStoreExists", data ).then((storeContent)=>{
+    axios.post("https://us-central1-serviiotest.cloudfunctions.net/checkStoreExists", data ).then((storeContent)=>{
       console.log("store check result is: " + JSON.stringify(storeContent.data));
 
       if("Error" in storeContent.data){

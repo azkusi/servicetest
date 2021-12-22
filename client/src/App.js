@@ -49,7 +49,7 @@ function App() {
       
     }).then(()=>{
       console.log("data to send is: " + JSON.stringify(datatosend))
-      axios.post("https://us-central1-dashtest-7cb07.cloudfunctions.net/getStoreContent", datatosend)
+      axios.post("https://us-central1-serviiotest.cloudfunctions.net/getStoreContent", datatosend)
       .then(res => {
         return res.data;
       })
