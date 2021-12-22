@@ -87,7 +87,7 @@ function App() {
           <Gallery />
         </Route>
         <Route exact path="/messages">
-          <Messages />
+          {content && <Messages serviceContent={content} />}
         </Route>
       </Switch>
     </>

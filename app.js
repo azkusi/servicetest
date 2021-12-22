@@ -22,7 +22,7 @@ app.use(cors());
 
 app.use('*', function(req, res, next){
   console.log("hostname is: " + req.hostname)
-   if(req.hostname === "servicetest-env.eba-nat7bnps.eu-west-2.elasticbeanstalk.com" || req.hostname === "172.31.19.33" ){
+   if(req.hostname === "servicetest-env.eba-nat7bnps.eu-west-2.elasticbeanstalk.com" || req.hostname === "172.31.19.33" || req.hostname === "18.169.151.120" ){
   //if(req.hostname == "hello.localhost"){
     res.sendFile(path.join(__dirname, "./client/public", "404.html"));
     //res.end();
@@ -32,8 +32,8 @@ app.use('*', function(req, res, next){
 
   
     INChostname = req.hostname
-    storename = req.hostname.replace('.myservviio.com', '')
-    //storename = req.hostname.replace('.localhost', '')
+    //storename = req.hostname.replace('.myservviio.com', '')
+    storename = req.hostname.replace('.localhost', '')
 
     //console.log(`hello here works in middleware req.data: ${req}, hostname: ${req.hostname}, subdomain is: ${(req.subdomains)}`);
 
@@ -45,17 +45,17 @@ app.use('*', function(req, res, next){
       console.log("store check result is: " + JSON.stringify(storeContent.data));
 
       if("Error" in storeContent.data){
-        if(storeContent.data["Error"] == "Unknown_Provider_Name"){
-          console.log("Unknown provider name searched")
-          res.sendFile(path.join(__dirname, "./client/public", "404.html"));
-          return null;
-        }
-        else{
-          console.log("Other error check logs")
-          res.sendFile(path.join(__dirname, "./client/public", "404.html"));
-          res.end()
-          return null;
-        }
+          if(storeContent.data["Error"] == "Unknown_Provider_Name"){
+            console.log("Unknown provider name searched")
+            res.sendFile(path.join(__dirname, "./client/public", "404.html"));
+            return null;
+          }
+          else{
+            console.log("Other error check logs")
+            res.sendFile(path.join(__dirname, "./client/public", "404.html"));
+            res.end()
+            return null;
+          }
       }
 
       //console.log("store content data is: " + JSON.stringify(storeContent.data))
