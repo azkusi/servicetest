@@ -12,6 +12,8 @@ import SecondaryNav from './store_components/SecondaryNav';
 import Calendar from './store_pages/Calendar';
 import BookingRequest from './store_pages/BookingRequest';
 import Messages from './store_pages/Messages';
+import Conversations from './store_pages/Conversation';
+import BookingDetails from './store_pages/BookingDetails';
 
 const { io } = require("socket.io-client");
 const axios = require('axios');
@@ -81,13 +83,21 @@ function App() {
           <Calendar />
         </Route>
         <Route exact path="/booking-request">
-          <BookingRequest />
+        { isPending && <div>Loading...</div> }
+          {content && <BookingRequest serviceContent={content} />}
+        </Route>
+        <Route exact path="/booking-request/details">
+          <BookingDetails />
         </Route>
         <Route exact path="/gallery">
           <Gallery />
         </Route>
         <Route exact path="/messages">
+        { isPending && <div>Loading...</div> }
           {content && <Messages serviceContent={content} />}
+        </Route>
+        <Route exact path="/conversations">
+          <Conversations />
         </Route>
       </Switch>
     </>

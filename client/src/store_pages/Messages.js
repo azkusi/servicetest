@@ -22,7 +22,7 @@ function Messages ({ serviceContent }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("")
   const [message, setMessage] = useState("")
-  const [success, setSuccess] = useState(false)
+  const [success, setSuccess] = useState(null)
   const nameRef = useRef()
   const messageRef = useRef()
   const emailRef = useRef()
@@ -39,21 +39,22 @@ function Messages ({ serviceContent }) {
     console.log("Name: " + nameSent)
     console.log("Email: " + emailSent)
     console.log("Message: " + messageSent)
-    setSuccess(true)
     try{
+      const currentTime = Date.now()
       const convoref = db.collection('serviceProviders').doc(serviceContent.service_provider_name).collection('conversations').doc()
       const convorefID = convoref.id
       console.log("convorefID is: " + convorefID)
-      await convoref.set({"last_message_sent": messageSent})
-      await db.collection('serviceProviders').doc(serviceContent.service_provider_name).collection('conversations').doc(convorefID).collection('messages').add({"message": messageSent, "name": nameSent, "email": emailSent})
-
+      await convoref.set({"last_message_sent": messageSent, "last_message_sent_by": "client", "client_name": nameSent, "client_email": emailSent, "timestamp": currentTime})
+      await db.collection('serviceProviders').doc(serviceContent.service_provider_name).collection('conversations').doc(convorefID).collection('messages').add({"message": messageSent, "client_name": nameSent, "client_email": emailSent, "message_sent_by": "client", "timestamp": currentTime})
+      setSuccess(true)
     }
     catch(err){
       console.log("error is: " + err)
+      setSuccess(false);
     }
 }
 
-
+  if(success === null){
     return (
       <>
       <div>
@@ -86,11 +87,7 @@ function Messages ({ serviceContent }) {
 
       {/* {success && <h2>Successfully sent</h2>} */}
 
-      {success && <Alert severity="success">
-        Your message was successfully sent to {serviceContent.service_content.page_title}
-        <br/>
-        We will send you an email when {serviceContent.service_content.page_title} responds to your message.
-      </Alert> }  
+      
 
       </div>
       </>
@@ -100,6 +97,27 @@ function Messages ({ serviceContent }) {
       //on serviomain add firebase function code to retrieve messages and set notifications
       //for each convo retrieve last message sent, whether unread by provider or not and all messages from convo
     );
+
+  }     
+  else{
+    return(
+      <div>
+        {success ? <Alert severity="success">
+        Your message was successfully sent to {serviceContent.service_content.page_title}
+        <br/>
+        We will send you an email when {serviceContent.service_content.page_title} responds to your message.
+      </Alert>   :
+        <Alert severity="danger">
+        Error occurred, please contact support
+        <br/>
+      </Alert>
+        }
+
+      </div>
+      
+    )
   }
+
+}
    
   export default Messages;
