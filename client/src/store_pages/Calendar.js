@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import { Spinner } from 'react-bootstrap';
 const { io } = require("socket.io-client");
 const axios = require('axios');
 
@@ -47,7 +48,7 @@ const Calendar = ({ bookings_events }) => {
 
     return (
       <div className="Calendar">
-          { isPending && <div>Loading...</div> }
+          { isPending && <div> <Spinner animation="border"/> </div> }
           {content && <h1> {content.service_provider_name}'s calendar events - React page </h1>}
           <br></br>
           <h3>More content</h3>

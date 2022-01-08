@@ -1,62 +1,120 @@
-import React, {useState, useEffect} from 'react';
-const { io } = require("socket.io-client");
-const axios = require('axios');
+import React, { useState, useEffect } from "react";
+import { Card, Button, Alert, Spinner } from "react-bootstrap";
+import { Link, useHistory } from "react-router-dom";
+import firebase from "firebase/compat/app";
+import "firebase/compat/firestore";
+// import 'react-pro-sidebar/dist/css/styles.css';
+import {auth, config} from '../firebase';
 
-const port = process.env.PORT || 5000;
+let db;
+  var store_name;
+  var loaded;
 
-const Services = ({ bookings_events }) => {
-
-  const [content, setContent] = useState(null);
-  const [isPending, setIsPending] = useState(true);
-
-
-  useEffect(() => {
-    var data = {}
-    var datatosend;
-    const socket = io();
-    socket.connect(`http://localhost:${port}`);
-    
-    return new Promise((resolve, reject) =>{
-      socket.on("store_check", (info)=>{
-        socket.disconnect();
-        //subdomain = domain.hostname
-        
-        data["store_name"] = info.store_name
-        datatosend = data
-        
-        document.title = info.store_name;
-        if(datatosend !== undefined){
-          resolve(datatosend)
-        }
-        
-      })
-      
-    }).then(()=>{
-      console.log("data to send is: " + JSON.stringify(datatosend))
-      axios.post("https://us-central1-dashtest-7cb07.cloudfunctions.net/getStoreContent", datatosend)
-      .then(res => {
-        return res.data;
-      })
-      .then(data => {
-        setIsPending(false);
-        setContent(data);
-      })
-    })
-
-  }, [])
-
-    return (
-      <div className="Services">
-          { isPending && <div>Loading...</div> }
-          {content && <h1> {content.service_provider_name}'s offered services - React page </h1>}
-          <br></br>
-          <h3>More content</h3>
-          <br></br>
-          <h3>More content</h3>
-          <br></br>
-          <h3>More content</h3>
-      </div>
-    );
+  if (!firebase.apps.length) {
+    firebase.initializeApp(config);
+    db = firebase.firestore();
+  }else {
+    db = firebase.app().firestore() // if already initialized, use that one
   }
-   
-  export default Services;
+
+
+export default function Services({serviceContent}) {
+    const [error, setError] = useState("")
+    const [servicesReady, setServicesReady] = useState(false)
+    const [loggedIn, setIsloggedIn] = useState(true)
+    const history = useHistory()
+    const [serviceCategories, setServiceCategories] = useState(null)
+    const [serviceSubCategories, setServiceSubCategories] = useState(null)
+    //setServices(services => ({...services, ...servicesB}))
+    const [services, setServices] = useState(null)
+
+
+    useEffect(()=>{
+        dataReadyCheck().then(()=>{
+            var servicesB = {}
+            var i;
+            var j;
+            var serviceHolder;
+            for(i=0; i < serviceCategories.length; i++){
+                //set key in services object i.e. {main categoryM: ""}
+                serviceHolder = []
+                for(j=0; j < serviceSubCategories.length; j++){
+                    console.log("service category: " + serviceCategories[i] + " service name: " + JSON.stringify(serviceSubCategories[j]))
+                    if (serviceSubCategories[j].main_category === serviceCategories[i].toString()){
+                        serviceHolder.push(serviceSubCategories[j].service_name)
+                    }
+                    if(j === serviceSubCategories.length -1){
+                        //i.e. {maincategory1 : [subcategory1, subcategory2...subcategoryN]..., maincategoryM: []}
+                        servicesB[ serviceCategories[i] ] = serviceHolder
+                    }
+                }
+                if(i === serviceCategories.length - 1){
+                    console.log("Services inside loop: " + JSON.stringify(services))
+                    console.log("ServiceReady has been set to true")
+                    setServices(servicesB)
+                    setServicesReady(true)
+                }
+                
+            }
+        }, ()=>{
+            history.push('/admin')
+        })
+        
+        
+    }, [serviceSubCategories, serviceCategories])
+
+
+    function dataReadyCheck(){
+      return new Promise((resolve, reject)=>{
+        setServiceCategories(serviceContent.service_content.service_categories)
+        setServiceSubCategories(serviceContent.service_content.services)
+        if(serviceSubCategories!== null && serviceCategories !== null){
+          console.log("Servicesubcategories: " + JSON.stringify(serviceSubCategories))
+          console.log("Servicecategories: " + JSON.stringify(serviceCategories))
+          resolve()
+        }
+      })
+    }
+
+
+    if(servicesReady === false){
+        console.log("ServiceReady = false atm")
+        return(
+            <h4>Loading...</h4>
+        )
+    }
+    else{
+        console.log("ServiceReady = true atm")
+        console.log("services: " + JSON.stringify(services))
+
+
+        return (
+            <>
+
+            <div>
+                <h1> Services page </h1>
+                <br></br>
+
+                    <div>
+                    {Object.keys(services).map((key, index)=>{
+                        console.log("key: " + key)
+                        console.log("Services: " + JSON.stringify(services))
+                        return(
+                            <div>
+                                <h3> {key} </h3>
+                                <div>
+                                    {services[key].map((item, i) =>{
+                                        return(<h4> {item} </h4>)
+                                    })}
+                                </div>
+                            </div>
+                        )
+                    })}
+                    </div>
+
+            </div>
+
+            </>
+        )
+    }
+}

@@ -220,7 +220,7 @@ function BookingDetails({match, location}) {
                                 </Card>
                             </div>
                         </div>
-                        : <Spinner animation="border"></Spinner>
+                        : <h4>Loading...</h4>
 
                 }
                  

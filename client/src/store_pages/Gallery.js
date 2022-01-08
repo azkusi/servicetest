@@ -1,62 +1,56 @@
-import React, {useState, useEffect} from 'react';
-const { io } = require("socket.io-client");
-const axios = require('axios');
+import React, { useState, useRef, useEffect } from "react";
 
-const port = process.env.PORT || 5000;
-
-const Gallery = ({ bookings_events }) => {
-
-  const [content, setContent] = useState(null);
-  const [isPending, setIsPending] = useState(true);
+import {config} from '../firebase';
+import firebase from "firebase/compat/app";
+import "firebase/compat/firestore";
 
 
-  useEffect(() => {
-    var data = {}
-    var datatosend;
-    const socket = io();
-    socket.connect(`http://localhost:${port}`);
-    
-    return new Promise((resolve, reject) =>{
-      socket.on("store_check", (info)=>{
-        socket.disconnect();
-        //subdomain = domain.hostname
+import ImageGrid from './components/ImageGrid';
+import Modal from './components/Modal';
+import { Spinner } from "react-bootstrap";
+
+let db;
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(config);
+  db = firebase.firestore();
+}else {
+  db = firebase.app().firestore() // if already initialized, use that one
+}
+
+
+export default function Gallery({serviceContent}) {
+ 
+    const [selectedImg, setSelectedImg] = useState(null);
+    // const [providerName, setProviderName] = useState(null)
+    const providerName = serviceContent.service_provider_name
+
+
+
+    // useEffect(()=>{
         
-        data["store_name"] = info.store_name
-        datatosend = data
-        
-        document.title = info.store_name;
-        if(datatosend !== undefined){
-          resolve(datatosend)
-        }
-        
-      })
-      
-    }).then(()=>{
-      console.log("data to send is: " + JSON.stringify(datatosend))
-      axios.post("https://us-central1-dashtest-7cb07.cloudfunctions.net/getStoreContent", datatosend)
-      .then(res => {
-        return res.data;
-      })
-      .then(data => {
-        setIsPending(false);
-        setContent(data);
-      })
-    })
+    //     setProviderName(serviceContent.service_provider_name)
 
-  }, [])
+    // }, [])
 
-    return (
-      <div className="Gallery">
-          { isPending && <div>Loading...</div> }
-          {content && <h1> {content.service_provider_name}'s Gallery of images - React page </h1>}
-          <br></br>
-          <h3>More content</h3>
-          <br></br>
-          <h3>More content</h3>
-          <br></br>
-          <h3>More content</h3>
-      </div>
-    );
-  }
-   
-  export default Gallery;
+    if(providerName === null){
+        return(
+          <h4> Loading... </h4>
+        )
+    }else{
+        return (
+            <div className="Gallery">
+              <h2> Gallery </h2>
+
+              {providerName && <ImageGrid provider_Name={providerName} setSelectedImg={setSelectedImg} />}
+              { selectedImg && (
+                <Modal selectedImg={selectedImg} setSelectedImg={setSelectedImg} />
+              )}
+            </div>
+          );
+    }
+
+
+  
+
+}

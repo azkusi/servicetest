@@ -14,6 +14,7 @@ import BookingRequest from './store_pages/BookingRequest';
 import Messages from './store_pages/Messages';
 import Conversations from './store_pages/Conversation';
 import BookingDetails from './store_pages/BookingDetails';
+import { Spinner } from 'react-bootstrap';
 
 const { io } = require("socket.io-client");
 const axios = require('axios');
@@ -72,7 +73,7 @@ function App() {
       <Switch>
         <Route exact path="/">
           <div className="home">
-            { isPending && <div>Loading...</div> }
+            { isPending && <h4> Loading... </h4> }
             {content && <Services serviceContent={content} />}
           </div>
         </Route>
@@ -83,17 +84,19 @@ function App() {
           <Calendar />
         </Route>
         <Route exact path="/booking-request">
-        { isPending && <div>Loading...</div> }
+        { isPending && <h4> Loading... </h4> }
           {content && <BookingRequest serviceContent={content} />}
         </Route>
         <Route exact path="/booking-request/details">
           <BookingDetails />
         </Route>
         <Route exact path="/gallery">
-          <Gallery />
+          {isPending && <h4> Loading... </h4>}
+          {content && <Gallery serviceContent={content} />}
+          
         </Route>
         <Route exact path="/messages">
-        { isPending && <div>Loading...</div> }
+        { isPending && <h4> Loading... </h4> }
           {content && <Messages serviceContent={content} />}
         </Route>
         <Route exact path="/conversations">
