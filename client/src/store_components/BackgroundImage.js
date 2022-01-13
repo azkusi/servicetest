@@ -5,7 +5,7 @@ function BackgroundImage({ serviceContent }){
     var frontPageTitle;
     var frontPageTagline;
 
-    console.log("service content:" + JSON.stringify(serviceContent))
+    // console.log("service content:" + JSON.stringify(serviceContent))
 
     if(serviceContent.service_content.page_styling === "choice_1"){
         backgroundImage = "background-image-1";
@@ -30,15 +30,6 @@ function BackgroundImage({ serviceContent }){
             <br></br>
             <h3 className={frontPageTagline}> {serviceContent.service_content.description}</h3>
         </div>
-        // <style>
-        //     body {
-        //         background-image: url('img_girl.jpg');
-        //         background-repeat: no-repeat;
-        //         background-attachment: fixed;
-        //         background-size: 100% 100%;
-        //     }
-
-        // </style>
     )
 }
 

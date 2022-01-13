@@ -1,9 +1,13 @@
+//=========================================================================
+//              CLIENT PAGE FOR INITIATING BOOKING REQUEST 
+//=========================================================================
+
 import "../styles.css";
 import React, { useRef, useState, useEffect } from "react";
-import { Form, Button, Card } from "react-bootstrap";
+import { Alert, Form, Button, Card } from "react-bootstrap";
 // import DropdownButton from 'react-bootstrap/DropdownButton'
 // import Dropdown from 'react-bootstrap/Dropdown'
-import Alert from '@mui/material/Alert';
+// import Alert from '@mui/material/Alert';
 
 import {app} from '../firebase';
 import firebase from "firebase/compat/app";
@@ -60,9 +64,16 @@ function BookingRequest ({ serviceContent }) {
       const convoref = db.collection('serviceProviders').doc(serviceContent.service_provider_name).collection('bookingrequests').doc()
       const convorefID = convoref.id
       console.log("convorefID is: " + convorefID)
-      await convoref.set({"last_message_sent": messageSent, "last_message_sent_by": "client", "client_name": nameSent, "client_email": emailSent, "service_requested" : serviceChosen, "service_notes": serviceNotes, "timestamp": currentTime})
-      await db.collection('serviceProviders').doc(serviceContent.service_provider_name).collection('bookingrequests').doc(convorefID).collection('messages').add({"message": messageSent, "client_name": nameSent, "client_email": emailSent, "message_sent_by": "client", "timestamp": currentTime})
+      await convoref.set({"last_message_sent": messageSent, "last_message_sent_by": "client", "client_name": nameSent, "client_email": emailSent, "service_requested" : serviceChosen, "service_notes": serviceNotes, "timestamp": currentTime, "booking_status": "pending", "provider_read_status": "unread"})
+      await db.collection('serviceProviders').doc(serviceContent.service_provider_name).collection('bookingrequests').doc(convorefID).collection('messages').add({"message": messageSent, "client_name": nameSent, "client_email": emailSent, "message_sent_by": "client", "timestamp": currentTime, "provider_read_status": "unread"})
+      // get booking_request_notifications array, push new notification and bookingrequest docID the notification came from not the messages docID
       
+      const bookingRequestNotifRef = db.collection('serviceProviders').doc(serviceContent.service_provider_name)
+      bookingRequestNotifRef.get().then(async (doc)=>{
+        let booking_requests_notif_array = doc.data().booking_requests_notifications
+        let temp_msg_notif_array = booking_requests_notif_array.push(convorefID)
+        await bookingRequestNotifRef.update({"booking_requests_notifications" : firebase.firestore.FieldValue.arrayUnion(...booking_requests_notif_array)}) 
+      })      
     }
     catch(err){
       console.log("error is: " + err)
@@ -90,7 +101,9 @@ if(success === null){
             <Form.Control type="email" ref={emailRef} placeholder="email" required />
           </Form.Group>
 
+          <Form.Label>Select Service</Form.Label>
           <Form.Select aria-label="Select Service">
+
           {offerred_services.map((item, index)=>{
             return(
               <option ref={serviceRef} value={index.toString()}>{item.service_name}</option>
@@ -110,6 +123,8 @@ if(success === null){
             <Form.Control type="text" ref={messageRef} placeholder="Type message" required />
           </Form.Group>
           <Button type="submit">Submit Booking Request</Button>
+
+          <Form.Label>Input service time using calendar:</Form.Label>
         </Form>
         </Card.Body>
         </Card>
@@ -128,12 +143,12 @@ else{
     <div>
       {/* {success && <h2>Successfully sent</h2>} */}
 
-      {success ? <Alert severity="success">
+      {success ? <Alert variant="success">
         Your message was successfully sent to {serviceContent.service_content.page_title}
         <br/>
         We will send you an email when {serviceContent.service_content.page_title} responds to your message.
       </Alert> :
-       <Alert severity="danger">
+       <Alert variant="danger">
        Error occurred, please contact support
        <br/>
      </Alert>} 

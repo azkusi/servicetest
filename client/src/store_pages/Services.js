@@ -78,9 +78,9 @@ export default function Services({serviceContent}) {
 
 
     if(servicesReady === false){
-        console.log("ServiceReady = false atm")
+        // console.log("ServiceReady = false atm")
         return(
-            <h4>Loading...</h4>
+            <Spinner animation="border"/>
         )
     }
     else{

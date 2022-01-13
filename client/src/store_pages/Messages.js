@@ -1,7 +1,12 @@
+//=========================================================================
+//            CLIENT PAGE FOR INITIATING MESSAGE TO PROVIDER   
+//=========================================================================
+
+
 import "../styles.css";
 import React, { useRef, useState } from "react";
-import { Form, Button, Card } from "react-bootstrap";
-import Alert from '@mui/material/Alert';
+import { Form, Button, Card, Alert } from "react-bootstrap";
+// import Alert from '@mui/material/Alert';
 
 import {app} from '../firebase';
 import firebase from "firebase/compat/app";
@@ -36,16 +41,25 @@ function Messages ({ serviceContent }) {
     const nameSent = nameRef.current.value;
     const emailSent = emailRef.current.value
     const messageSent = messageRef.current.value
-    console.log("Name: " + nameSent)
-    console.log("Email: " + emailSent)
-    console.log("Message: " + messageSent)
+    // console.log("Name: " + nameSent)
+    // console.log("Email: " + emailSent)
+    // console.log("Message: " + messageSent)
     try{
       const currentTime = Date.now()
       const convoref = db.collection('serviceProviders').doc(serviceContent.service_provider_name).collection('conversations').doc()
       const convorefID = convoref.id
-      console.log("convorefID is: " + convorefID)
-      await convoref.set({"last_message_sent": messageSent, "last_message_sent_by": "client", "client_name": nameSent, "client_email": emailSent, "timestamp": currentTime})
-      await db.collection('serviceProviders').doc(serviceContent.service_provider_name).collection('conversations').doc(convorefID).collection('messages').add({"message": messageSent, "client_name": nameSent, "client_email": emailSent, "message_sent_by": "client", "timestamp": currentTime})
+      // console.log("convorefID is: " + convorefID)
+      await convoref.set({"last_message_sent": messageSent, "last_message_sent_by": "client", "client_name": nameSent, "client_email": emailSent, "timestamp": currentTime, "provider_read_status": "unread"})
+      await db.collection('serviceProviders').doc(serviceContent.service_provider_name).collection('conversations').doc(convorefID).collection('messages').add({"message": messageSent, "client_name": nameSent, "client_email": emailSent, "message_sent_by": "client", "timestamp": currentTime, "provider_read_status": "unread"})
+      
+      // get msgs_notifications array, push new notification and convo docID the notification came from not the messages docID
+      const msgNotifRef = db.collection('serviceProviders').doc(serviceContent.service_provider_name)
+      msgNotifRef.get().then(async (doc)=>{
+        let msg_notif_array = doc.data().msgs_notifications
+        let temp_msg_notif_array = msg_notif_array.push(convorefID)
+        await msgNotifRef.update({"msgs_notifications" : firebase.firestore.FieldValue.arrayUnion(...msg_notif_array)}) 
+      })
+
       setSuccess(true)
     }
     catch(err){
@@ -102,12 +116,12 @@ function Messages ({ serviceContent }) {
   else{
     return(
       <div>
-        {success ? <Alert severity="success">
+        {success ? <Alert variant="success">
         Your message was successfully sent to {serviceContent.service_content.page_title}
         <br/>
         We will send you an email when {serviceContent.service_content.page_title} responds to your message.
       </Alert>   :
-        <Alert severity="danger">
+        <Alert variant="danger">
         Error occurred, please contact support
         <br/>
       </Alert>

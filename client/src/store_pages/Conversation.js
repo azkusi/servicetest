@@ -1,3 +1,8 @@
+//=========================================================================
+//    CLIENT PAGE FOR RESPONDING TO PROVIDER'S RESPONSE TO MESSAGE 
+//=========================================================================
+
+
 import React, { useEffect, useState, useRef } from 'react';
 import Row from "react-bootstrap/Row"
 import firebase from "firebase/compat/app";
@@ -60,8 +65,16 @@ function Conversations({match, location}) {
         // update the 'most recent message sent field in the conversations collection doc'
           const convoRef = db.collection('serviceProviders').doc(providerName).collection('conversations').doc(conversationID)
         //   console.log("convorefID is: " + convorefID)
-          await messageRef.set({"message": messageSent, "message_sent_by": "client", "timestamp": currentTime})
-          await convoRef.update({"last_message_sent": messageSent, "last_message_sent_by": "client", "timestamp": currentTime})
+          await messageRef.set({"message": messageSent, "message_sent_by": "client", "timestamp": currentTime, "provider_read_status": "unread"})
+          await convoRef.update({"last_message_sent": messageSent, "last_message_sent_by": "client", "timestamp": currentTime, "provider_read_status": "unread"})
+       
+          // get msgs_notifications array, push new notification and convo docID the notification came from not the messages docID
+        const msgNotifRef = db.collection('serviceProviders').doc(providerName)
+        msgNotifRef.get().then(async (doc)=>{
+          let msg_notif_array = doc.data().msgs_notifications
+          let temp_msg_notif_array = msg_notif_array.push(conversationID)
+          await msgNotifRef.update({"msgs_notifications" : firebase.firestore.FieldValue.arrayUnion(...msg_notif_array)}) 
+        })
             console.log("message sent: " + messageSent) 
         }
         catch(err){

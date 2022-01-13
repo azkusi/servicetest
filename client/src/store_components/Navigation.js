@@ -19,28 +19,34 @@ else{
     return(
       <>
         <nav className={topNavColour}>
-          <h2> {serviceContent.service_content.page_title} </h2>
+          <div>
+            <Link style={{ textDecoration: 'none' }} to="/">
+              <h2> {serviceContent.service_content.page_title} </h2>
+            </Link>
+          </div>
           <ul className="nav-link">
-            {/* <li>
-              <Link to="/">
-                Home
+          <li>
+              <Link style={{ textDecoration: 'none' }} to="/services">
+                <h4> Service Info & Pricing </h4>
               </Link>
             </li>
             <li>
-              <Link to="/services">
-                Services
+            </li>
+            <li>
+              <Link style={{ textDecoration: 'none' }} to="/booking-request">
+                Availability & Booking
               </Link>
             </li>
             <li>
-              <Link to="/bookings">
-                Bookings
-              </Link>
-            </li>
-            <li>
-              <Link to="/gallery">
+              <Link style={{ textDecoration: 'none' }} to="/gallery">
                 Gallery
               </Link>
-            </li> */}
+            </li>
+            <li>
+              <Link style={{ textDecoration: 'none' }} to="/messages">
+                Send Message
+              </Link>
+            </li>
           </ul>
         </nav>
       </>

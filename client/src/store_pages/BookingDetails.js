@@ -1,3 +1,7 @@
+//=========================================================================
+//    CLIENT PAGE FOR RESPONDING TO PROVIDER'S RESPONSE TO BOOKING REQUEST 
+//=========================================================================
+
 import React, { useEffect, useState, useRef } from 'react';
 import Row from "react-bootstrap/Row"
 import firebase from "firebase/compat/app";
@@ -65,8 +69,17 @@ function BookingDetails({match, location}) {
         // update the 'most recent message sent field in the conversations collection doc'
           const bookingRef = db.collection('serviceProviders').doc(providerName).collection('bookingrequests').doc(bookingRefID)
         //   console.log("convorefID is: " + convorefID)
-          await messageRef.set({"message": messageSent, "message_sent_by": "client", "timestamp": currentTime})
-          await bookingRef.update({"last_message_sent": messageSent, "last_message_sent_by": "client", "timestamp": currentTime})
+          await messageRef.set({"message": messageSent, "message_sent_by": "client", "timestamp": currentTime, "provider_read_status": "unread"})
+          await bookingRef.update({"last_message_sent": messageSent, "last_message_sent_by": "client", "timestamp": currentTime, "provider_read_status": "unread"})
+        // get booking_request_notifications array, push new notification and bookingrequest docID the notification came from not the messages docID
+        
+        const bookingRequestNotifRef = db.collection('serviceProviders').doc(providerName)
+        bookingRequestNotifRef.get().then(async (doc)=>{
+          let booking_requests_notif_array = doc.data().booking_requests_notifications
+          let temp_msg_notif_array = booking_requests_notif_array.push(bookingRefID)
+          await bookingRequestNotifRef.update({"booking_requests_notifications" : firebase.firestore.FieldValue.arrayUnion(...booking_requests_notif_array)}) 
+        })
+
             console.log("message sent: " + messageSent) 
         }
         catch(err){

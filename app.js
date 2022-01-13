@@ -19,67 +19,6 @@ var account_details;
 app.use(cors());
 
 
-
-app.use('*', function(req, res, next){
-  console.log("hostname is: " + req.hostname)
-   if(req.hostname === "servicetest-env.eba-nat7bnps.eu-west-2.elasticbeanstalk.com" || req.hostname === "172.31.19.33" || req.hostname === "18.169.151.120" ){
-  //if(req.hostname == "hello.localhost"){
-    res.sendFile(path.join(__dirname, "./client/public", "404.html"));
-    //res.end();
-    return null;
-  }
-  else{
-
-  
-    INChostname = req.hostname
-    storename = req.hostname.replace('.myservviio.com', '')
-    storename = req.hostname.replace('.localhost', '')
-
-    //console.log(`hello here works in middleware req.data: ${req}, hostname: ${req.hostname}, subdomain is: ${(req.subdomains)}`);
-
-    const data = {"store_name": storename}
-    
-    //firebase
-    console.log("Store name being sent to firebase is: " + storename)
-    axios.post("https://us-central1-serviiotest.cloudfunctions.net/checkStoreExists", data ).then((storeContent)=>{
-      console.log("store check result is: " + JSON.stringify(storeContent.data));
-
-      if("Error" in storeContent.data){
-          if(storeContent.data["Error"] == "Unknown_Provider_Name"){
-            console.log("Unknown provider name searched")
-            res.sendFile(path.join(__dirname, "./client/public", "404.html"));
-            return null;
-          }
-          else{
-            console.log("Other error check logs")
-            res.sendFile(path.join(__dirname, "./client/public", "404.html"));
-            res.end()
-            return null;
-          }
-      }
-
-      //console.log("store content data is: " + JSON.stringify(storeContent.data))
-      //store_front_content = storeContent.data
-      io.on("connection", function (socket) {
-        console.log(`Made socket connection, socket is ${socket.id}`);
-        console.log(`Hostname: ${INChostname}`);
-        //should send site name only then do request for data on client side using 
-        //site name and show loading sign in the meantime
-        //io.emit("subdomain", {"socket id": socket.id, "hostname": INChostname.replace('.localhost', ''), "details": store_front_content});
-        //io.emit("subdomain", {"socket id": socket.id, "hostname": INChostname.replace('.myservviio.com', ''), "details": store_front_content});
-        //setTimeout(() => socket.disconnect(true), 1000);
-
-        io.emit("store_check", {"store_name": storename});
-
-      });
-      next()
-    }, (error)=>{
-      console.log("error occurred: " + error)
-    })
-  }
-  
-})
-
 app.use(express.static(path.join(__dirname, "build")))
 
 

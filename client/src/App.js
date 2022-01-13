@@ -1,7 +1,7 @@
 //import logo from './logo.svg';
 import Home from './store_pages/BookingRequest'
-import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
-import Lost from './store_pages/404_error';
+import {BrowserRouter as Router, Route, Switch, useLocation} from 'react-router-dom';
+import Lost from './store_pages/NonExistentRoute';
 import './App.css';
 import React, {useState, useEffect} from 'react';
 import Gallery from './store_pages/Gallery';
@@ -15,9 +15,27 @@ import Messages from './store_pages/Messages';
 import Conversations from './store_pages/Conversation';
 import BookingDetails from './store_pages/BookingDetails';
 import { Spinner } from 'react-bootstrap';
+import Advertisements from './store_pages/components/Advertisements';
+import NonExistentRoute from './store_pages/NonExistentRoute';
+import NonExistentStore from './store_pages/NonExistentStore';
+
+
+import firebase from "firebase/compat/app";
+import "firebase/compat/firestore";
+import "firebase/compat/storage";
+import {config} from './firebase';
 
 const { io } = require("socket.io-client");
 const axios = require('axios');
+var providerName;
+let db;
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(config);
+  db = firebase.firestore();
+}else {
+  db = firebase.app().firestore() // if already initialized, use that one
+}
 
 
 
@@ -27,85 +45,117 @@ function App() {
 
   const [content, setContent] = useState(null);
   const [isPending, setIsPending] = useState(true);
+  const location = useLocation();
+  const [errorPage, setErrorPage] = useState(false)
+  const [noNav, setNoNav] = useState(false)
 
 
   useEffect(() => {
-    var data = {}
-    var datatosend;
-    const socket = io();
-    socket.connect(`http://localhost:${port}`);
+    getSubdomain()
+
+  }, [content, errorPage, noNav])
+
+
+  function getSubdomain(){
+    const subdomainString = window.location.hostname
+    providerName = subdomainString.replace('.myservviio.com', '')
+    providerName = providerName.replace('.localhost', '')
+
+    if(providerName){
+      db.collection("serviceProviders").doc(providerName)
+      .get().then((doc) => {
+              if (doc.exists) {
+                  // console.log("Store exists: " + JSON.stringify(doc.data()))
+                  setContent({"service_provider_name" : doc.id, "service_content":doc.data()})
+                  setIsPending(false)
+              } else {
+                  // console.log("No such provider!");
+                  setErrorPage(true)
+              }
+      })
+    }
     
-    return new Promise((resolve, reject) =>{
-      socket.on("store_check", (info)=>{
-        socket.disconnect();
-        //subdomain = domain.hostname
-        
-        data["store_name"] = info.store_name
-        datatosend = data
-        
-        document.title = info.store_name;
-        if(datatosend !== undefined){
-          resolve(datatosend)
-        }
-        
-      })
-      
-    }).then(()=>{
-      console.log("data to send is: " + JSON.stringify(datatosend))
-      axios.post("https://us-central1-serviiotest.cloudfunctions.net/getStoreContent", datatosend)
-      .then(res => {
-        return res.data;
-      })
-      .then(data => {
-        setIsPending(false);
-        setContent(data);
-      })
-    })
-
-  }, [])
 
 
-  return (
-    <>
-      {content && <Navigation serviceContent={content} />}
-      {content && <BackgroundImage serviceContent={content}/> }
-      {content && <SecondaryNav serviceContent={content}/> }
-      <Switch>
-        <Route exact path="/">
-          <div className="home">
-            { isPending && <h4> Loading... </h4> }
-            {content && <Services serviceContent={content} />}
-          </div>
-        </Route>
-        <Route exact path="/new">
-          <Lost />
-        </Route>
-        <Route exact path="/calendar">
-          <Calendar />
-        </Route>
-        <Route exact path="/booking-request">
-        { isPending && <h4> Loading... </h4> }
-          {content && <BookingRequest serviceContent={content} />}
-        </Route>
-        <Route exact path="/booking-request/details">
-          <BookingDetails />
-        </Route>
-        <Route exact path="/gallery">
-          {isPending && <h4> Loading... </h4>}
-          {content && <Gallery serviceContent={content} />}
-          
-        </Route>
-        <Route exact path="/messages">
-        { isPending && <h4> Loading... </h4> }
-          {content && <Messages serviceContent={content} />}
-        </Route>
-        <Route exact path="/conversations">
-          <Conversations />
-        </Route>
-      </Switch>
-    </>
-    
-  );
+  }
+  if(errorPage === true){
+    return(
+      <NonExistentStore/>
+    )
+  }
+  else{
+
+    if((content === null) || (content === undefined) || (!content)){
+      return (
+        <Spinner animation="border"/>
+      )
+    }
+    else{
+      return (
+        <>
+        
+         {(!noNav) && <Navigation serviceContent={content} />}
+  
+          {((location.pathname !== "/") && (!noNav)) && 
+            <div>
+              <Advertisements/>
+            </div>
+          }
+  
+          <Switch>
+  
+            <Route exact path="/">
+            { isPending && <Spinner/> }
+              <BackgroundImage serviceContent={content}/>
+            </Route>
+  
+            <Route exact path="/services">
+              <div>
+              { isPending && <Spinner/> }
+                <Services serviceContent={content} />
+              </div>
+            </Route>
+  
+            <Route exact path="/booking-request">
+            { isPending && <Spinner/> }
+              <BookingRequest serviceContent={content} />
+            </Route>
+  
+            <Route exact path="/booking-request/details">
+            { isPending && <Spinner/> }
+              <BookingDetails />
+            </Route>
+  
+            <Route exact path="/gallery">
+            { isPending && <Spinner/> }
+              <Gallery serviceContent={content} />
+            </Route>
+  
+            <Route exact path="/messages">
+            { isPending && <Spinner/> }
+              {content && <Messages serviceContent={content} />}
+            </Route>
+  
+            <Route exact path="/conversations">
+            { isPending && <Spinner/> }
+              <Conversations />
+            </Route>
+  
+            <Route>
+              <NonExistentRoute/>
+            </Route>
+            
+          </Switch>
+        </>
+        
+      );
+    }
+  }
+
+  
+
+
+  
 }
 
 export default App;
