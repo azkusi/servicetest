@@ -2,14 +2,12 @@
 //              CLIENT PAGE FOR INITIATING BOOKING REQUEST 
 //=========================================================================
 
-import "../styles.css";
 import React, { useRef, useState, useEffect } from "react";
 import { Alert, Form, Button, Card } from "react-bootstrap";
 // import DropdownButton from 'react-bootstrap/DropdownButton'
 // import Dropdown from 'react-bootstrap/Dropdown'
 // import Alert from '@mui/material/Alert';
 
-import {app} from '../firebase';
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 
@@ -25,9 +23,6 @@ if (!firebase.apps.length) {
 }
 
 function BookingRequest ({ serviceContent }) {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("")
-  const [message, setMessage] = useState("")
   const [success, setSuccess] = useState(null)
   const nameRef = useRef()
   const messageRef = useRef()
@@ -61,14 +56,17 @@ function BookingRequest ({ serviceContent }) {
     try{
       setSuccess(true)
       const currentTime = Date.now()
-      const convoref = db.collection('serviceProviders').doc(serviceContent.service_provider_name).collection('bookingrequests').doc()
+      const convoref = db.collection('serviceProviders').doc(serviceContent.site_name).collection('bookingrequests').doc()
       const convorefID = convoref.id
       console.log("convorefID is: " + convorefID)
       await convoref.set({"last_message_sent": messageSent, "last_message_sent_by": "client", "client_name": nameSent, "client_email": emailSent, "service_requested" : serviceChosen, "service_notes": serviceNotes, "timestamp": currentTime, "booking_status": "pending", "provider_read_status": "unread"})
-      await db.collection('serviceProviders').doc(serviceContent.service_provider_name).collection('bookingrequests').doc(convorefID).collection('messages').add({"message": messageSent, "client_name": nameSent, "client_email": emailSent, "message_sent_by": "client", "timestamp": currentTime, "provider_read_status": "unread"})
+      db.collection('serviceProviders').doc(serviceContent.site_name).collection('bookingrequests').doc(convorefID).collection('messages').add({"message": messageSent, "client_name": nameSent, "client_email": emailSent, "message_sent_by": "client", "timestamp": currentTime, "provider_read_status": "unread"})
+      .then(()=>{
+        messageRef.current.value = ''
+      })
       // get booking_request_notifications array, push new notification and bookingrequest docID the notification came from not the messages docID
       
-      const bookingRequestNotifRef = db.collection('serviceProviders').doc(serviceContent.service_provider_name)
+      const bookingRequestNotifRef = db.collection('serviceProviders').doc(serviceContent.site_name)
       bookingRequestNotifRef.get().then(async (doc)=>{
         let booking_requests_notif_array = doc.data().booking_requests_notifications
         let temp_msg_notif_array = booking_requests_notif_array.push(convorefID)

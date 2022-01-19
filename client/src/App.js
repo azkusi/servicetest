@@ -1,14 +1,15 @@
 //import logo from './logo.svg';
+// import './App.css';
 import Home from './store_pages/BookingRequest'
 import {BrowserRouter as Router, Route, Switch, useLocation} from 'react-router-dom';
 import Lost from './store_pages/NonExistentRoute';
-import './App.css';
+
 import React, {useState, useEffect} from 'react';
 import Gallery from './store_pages/Gallery';
 import Services from './store_pages/Services';
 import Navigation from './store_components/Navigation';
 import BackgroundImage from './store_components/BackgroundImage';
-import SecondaryNav from './store_components/SecondaryNav';
+
 import Calendar from './store_pages/Calendar';
 import BookingRequest from './store_pages/BookingRequest';
 import Messages from './store_pages/Messages';
@@ -53,7 +54,7 @@ function App() {
   useEffect(() => {
     getSubdomain()
 
-  }, [content, errorPage, noNav])
+  }, [])
 
 
   function getSubdomain(){
@@ -61,12 +62,12 @@ function App() {
     providerName = subdomainString.replace('.myservviio.com', '')
     providerName = providerName.replace('.localhost', '')
 
-    if(providerName){
+    if(content === null){
       db.collection("serviceProviders").doc(providerName)
       .get().then((doc) => {
               if (doc.exists) {
                   // console.log("Store exists: " + JSON.stringify(doc.data()))
-                  setContent({"service_provider_name" : doc.id, "service_content":doc.data()})
+                  setContent({"site_name" : doc.id, "service_content":doc.data()})
                   setIsPending(false)
               } else {
                   // console.log("No such provider!");
@@ -105,39 +106,44 @@ function App() {
           <Switch>
   
             <Route exact path="/">
-            { isPending && <Spinner/> }
-              <BackgroundImage serviceContent={content}/>
+            { !content && <Spinner/> }
+              {content && <BackgroundImage serviceContent={content}/>}
             </Route>
   
             <Route exact path="/services">
               <div>
-              { isPending && <Spinner/> }
+              { (!content) && <Spinner/> }
                 <Services serviceContent={content} />
               </div>
             </Route>
   
             <Route exact path="/booking-request">
-            { isPending && <Spinner/> }
+            { (!content) && <Spinner/> }
               <BookingRequest serviceContent={content} />
             </Route>
   
             <Route exact path="/booking-request/details">
-            { isPending && <Spinner/> }
+            { (!content) && <Spinner/> }
               <BookingDetails />
             </Route>
   
             <Route exact path="/gallery">
-            { isPending && <Spinner/> }
+            { (!content) && <Spinner/> }
               <Gallery serviceContent={content} />
             </Route>
   
             <Route exact path="/messages">
-            { isPending && <Spinner/> }
+            { (!content) && <Spinner/> }
               {content && <Messages serviceContent={content} />}
+            </Route>
+
+            <Route exact path="/calendar">
+            { (!content) && <Spinner/> }
+              {content && <Calendar serviceContent={content} />}
             </Route>
   
             <Route exact path="/conversations">
-            { isPending && <Spinner/> }
+            {/* { (!content) && <Spinner/> } */}
               <Conversations />
             </Route>
   

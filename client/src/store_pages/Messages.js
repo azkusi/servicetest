@@ -3,7 +3,6 @@
 //=========================================================================
 
 
-import "../styles.css";
 import React, { useRef, useState } from "react";
 import { Form, Button, Card, Alert } from "react-bootstrap";
 // import Alert from '@mui/material/Alert';
@@ -46,14 +45,14 @@ function Messages ({ serviceContent }) {
     // console.log("Message: " + messageSent)
     try{
       const currentTime = Date.now()
-      const convoref = db.collection('serviceProviders').doc(serviceContent.service_provider_name).collection('conversations').doc()
+      const convoref = db.collection('serviceProviders').doc(serviceContent.site_name).collection('conversations').doc()
       const convorefID = convoref.id
       // console.log("convorefID is: " + convorefID)
       await convoref.set({"last_message_sent": messageSent, "last_message_sent_by": "client", "client_name": nameSent, "client_email": emailSent, "timestamp": currentTime, "provider_read_status": "unread"})
-      await db.collection('serviceProviders').doc(serviceContent.service_provider_name).collection('conversations').doc(convorefID).collection('messages').add({"message": messageSent, "client_name": nameSent, "client_email": emailSent, "message_sent_by": "client", "timestamp": currentTime, "provider_read_status": "unread"})
+      await db.collection('serviceProviders').doc(serviceContent.site_name).collection('conversations').doc(convorefID).collection('messages').add({"message": messageSent, "client_name": nameSent, "client_email": emailSent, "message_sent_by": "client", "timestamp": currentTime, "provider_read_status": "unread"})
       
       // get msgs_notifications array, push new notification and convo docID the notification came from not the messages docID
-      const msgNotifRef = db.collection('serviceProviders').doc(serviceContent.service_provider_name)
+      const msgNotifRef = db.collection('serviceProviders').doc(serviceContent.site_name)
       msgNotifRef.get().then(async (doc)=>{
         let msg_notif_array = doc.data().msgs_notifications
         let temp_msg_notif_array = msg_notif_array.push(convorefID)

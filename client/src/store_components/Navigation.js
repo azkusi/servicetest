@@ -1,8 +1,9 @@
 import React from 'react';
 import '../App.css';
 import { Link } from 'react-router-dom';
-
+import * as themes from '../themes.json';
 function Navigation({ serviceContent }){
+  const page_theme = serviceContent.service_content.page_theme.theme_name
 
   var topNavColour;
 
@@ -18,33 +19,31 @@ else{
 }
     return(
       <>
-        <nav className={topNavColour}>
+        <nav style={{"background-color": themes.themes[page_theme].colors.background, "height": "15vh"}}>
           <div>
-            <Link style={{ textDecoration: 'none' }} to="/">
-              <h2> {serviceContent.service_content.page_title} </h2>
+            <Link style={{ textDecoration: 'none', "color": themes.themes[page_theme].colors.text, "font-weight": "bold" }} to="/">
+              {serviceContent.service_content.page_title}
             </Link>
           </div>
           <ul className="nav-link">
-          <li>
-              <Link style={{ textDecoration: 'none' }} to="/services">
-                <h4> Service Info & Pricing </h4>
+          <li style={{"padding-left": "15px", "padding-right": "15px"}}>
+              <Link style={{ textDecoration: 'none', "color": themes.themes[page_theme].colors.text, "font-weight": "bold" }} to="/services">
+                Service Info & Pricing
               </Link>
             </li>
-            <li>
-            </li>
-            <li>
-              <Link style={{ textDecoration: 'none' }} to="/booking-request">
-                Availability & Booking
+            <li style={{"padding-left": "15px", "padding-right": "15px"}}>
+              <Link style={{ textDecoration: 'none', "color": themes.themes[page_theme].colors.text, "font-weight": "bold" }} to="/booking-request">
+                  Availability & Booking
               </Link>
             </li>
-            <li>
-              <Link style={{ textDecoration: 'none' }} to="/gallery">
-                Gallery
+            <li style={{"padding-left": "15px", "padding-right": "15px"}}>
+              <Link style={{ textDecoration: 'none', "color": themes.themes[page_theme].colors.text, "font-weight": "bold" }} to="/gallery">
+                  Gallery              
               </Link>
             </li>
-            <li>
-              <Link style={{ textDecoration: 'none' }} to="/messages">
-                Send Message
+            <li style={{"padding-left": "15px", "padding-right": "15px"}}>
+              <Link style={{ textDecoration: 'none', "color": themes.themes[page_theme].colors.text, "font-weight": "bold" }} to="/messages">
+                  Send Message
               </Link>
             </li>
           </ul>

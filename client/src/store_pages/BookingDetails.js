@@ -9,6 +9,8 @@ import "firebase/compat/firestore";
 import config from '../firebase';
 import { Spinner, Form, Button, Card } from "react-bootstrap";
 import {useLocation, Redirect} from 'react-router-dom'
+import useGetBookingMessages from './hooks/useGetBookingMessages';
+import useGetBookingDetails from './hooks/useGetBookingDetails';
 
 let db;
   var store_name;
@@ -25,35 +27,14 @@ function BookingDetails({match, location}) {
     // console.log("reached FullConversations component")
     const search = useLocation().search;
     
-    // const [firebaseConversationID, setfirebaseConversationID] = useState("") 
-
-    const [messages, setMessages] = useState([])
-    const [redirect, setRedirect] = useState(false);
-    const [finishedLoading, setFinishedLoading] = useState(false)
-    const [bookingdetalis, setBookingDetails] = useState('')
+    const messages = useGetBookingMessages()
+    const bookingdetails = useGetBookingDetails()
     const messageRef = useRef()
-    var messageList = [];
 
-    useEffect(()=>{
-
-        paramCheck().then(()=>{
-            getBookingDetails().then(()=>{
-                getConversation().then(()=>{
-                    setMessages(messageList)
-                    setFinishedLoading(true)
-                }, (value)=>{
-                    console.log(value);
-                    setRedirect(true)
-                })
-            },(err)=>{
-                console.log("error occurred: " + err);
-            })
-        }, (value)=>{
-            console.log(value)
-            setRedirect(true)
-        })
+    // useEffect(()=>{
         
-    }, [search, messages])
+        
+    // }, [search, messages])
 
     async function onFormSubmit (e){
         const providerName = new URLSearchParams(search).get('provider')
@@ -64,21 +45,24 @@ function BookingDetails({match, location}) {
         // setSuccess(true)
         try{
             const currentTime = Date.now()
-        //create new message doc for this new message provider has just typed
-          const messageRef = db.collection('serviceProviders').doc(providerName).collection('bookingrequests').doc(bookingRefID).collection('messages').doc()
-        // update the 'most recent message sent field in the conversations collection doc'
-          const bookingRef = db.collection('serviceProviders').doc(providerName).collection('bookingrequests').doc(bookingRefID)
-        //   console.log("convorefID is: " + convorefID)
-          await messageRef.set({"message": messageSent, "message_sent_by": "client", "timestamp": currentTime, "provider_read_status": "unread"})
-          await bookingRef.update({"last_message_sent": messageSent, "last_message_sent_by": "client", "timestamp": currentTime, "provider_read_status": "unread"})
-        // get booking_request_notifications array, push new notification and bookingrequest docID the notification came from not the messages docID
+            //create new message doc for this new message provider has just typed
+            const messageRefFB = db.collection('serviceProviders').doc(providerName).collection('bookingrequests').doc(bookingRefID).collection('messages').doc()
+            // update the 'most recent message sent field in the conversations collection doc'
+            const bookingRef = db.collection('serviceProviders').doc(providerName).collection('bookingrequests').doc(bookingRefID)
+            //   console.log("convorefID is: " + convorefID)
+            await messageRefFB.set({"message": messageSent, "message_sent_by": "client", "timestamp": currentTime, "provider_read_status": "unread"})
+            bookingRef.update({"last_message_sent": messageSent, "last_message_sent_by": "client", "timestamp": currentTime, "provider_read_status": "unread"})
+            .then(()=>{
+                messageRef.current.value = ''
+            })
+            // get booking_request_notifications array, push new notification and bookingrequest docID the notification came from not the messages docID
         
-        const bookingRequestNotifRef = db.collection('serviceProviders').doc(providerName)
-        bookingRequestNotifRef.get().then(async (doc)=>{
-          let booking_requests_notif_array = doc.data().booking_requests_notifications
-          let temp_msg_notif_array = booking_requests_notif_array.push(bookingRefID)
-          await bookingRequestNotifRef.update({"booking_requests_notifications" : firebase.firestore.FieldValue.arrayUnion(...booking_requests_notif_array)}) 
-        })
+            const bookingRequestNotifRef = db.collection('serviceProviders').doc(providerName)
+            bookingRequestNotifRef.get().then(async (doc)=>{
+            let booking_requests_notif_array = doc.data().booking_requests_notifications
+            let temp_msg_notif_array = booking_requests_notif_array.push(bookingRefID)
+            await bookingRequestNotifRef.update({"booking_requests_notifications" : firebase.firestore.FieldValue.arrayUnion(...booking_requests_notif_array)}) 
+            })
 
             console.log("message sent: " + messageSent) 
         }
@@ -88,100 +72,8 @@ function BookingDetails({match, location}) {
     }
 
 
-    function paramCheck(){
-        return new Promise((resolve, reject)=>{
-            const searcher = new URLSearchParams(search)
-            if(!(searcher.has('bookingref')) || !(searcher.has('provider'))){
-                reject("missing params");
-            }
-            else{
-                resolve("params present")
-            }
-        })
-    }
 
-    function getConversation(){
-        // const providerName = location.query.provider
-        // const conversationID = location.query.chat
-        const providerName = new URLSearchParams(search).get('provider')
-        const bookingrefID = new URLSearchParams(search).get('bookingref')
-        return new Promise((resolve, reject)=>{ 
-            // console.log("running get convo function")
-            const providerRefTest = db.collection('serviceProviders').doc(providerName)
-            const fullConvoRefTest = db.collection('serviceProviders').doc(providerName).collection('bookingrequests').doc(bookingrefID)
-            providerRefTest.get()
-            .then((docSnapshot)=>{
-                // console.log("got 1st snap")
-                if(!docSnapshot.exists){
-                    // console.log("retailer does not exist")
-                    reject("conversation does not exist")
-                }
-                else{
-                    fullConvoRefTest.get()
-                    .then((docSnapshot)=>{
-                        // console.log("got 2nd snap")
-                        if(!docSnapshot.exists){
-                            // console.log("convo does not exist")
-                            reject("conversation does not exist")
-                        }
-                        else{
-
-                            const fullConvoRef = db.collection('serviceProviders').doc(providerName).collection('bookingrequests').doc(bookingrefID).collection('messages')
-                            fullConvoRef.orderBy('timestamp', 'asc')
-                            .onSnapshot(async (querySnapshot)=>{
-                                // console.log("got messages snap")
-                                querySnapshot.forEach((snapshot) =>{
-                                    // console.log("snapshot data: " + JSON.stringify(snapshot.data()))
-                                    // console.log("messageList inside snapshot loop: " + JSON.stringify(messageList))
-                                    const messageID = snapshot.id
-                                    if(snapshot.data().message_sent_by === "client"){
-                                        //place unread colour or notification on message
-                                        // console.log("adding client msg")
-                                        messageList.push({
-                                        "message": snapshot.data().message,
-                                        "timestamp": snapshot.data().timestamp,
-                                        "message_sent_by": snapshot.data().message_sent_by,
-                                        "messageID": messageID})
-                                    }else{
-                                    //simply place message
-                                    //   console.log("adding provider msg")
-                                    messageList.push({
-                                        "message": snapshot.data().message,
-                                        "timestamp": snapshot.data().timestamp,
-                                        "message_sent_by": snapshot.data().message_sent_by,
-                                        "messageID": messageID})
-                                    }
-                                    
-                                })
-                            // console.log("MSGList inside function" + JSON.stringify(messageList))
-                            resolve(messageList);
-                            })
-                            
-                        }
-                        
-                    })
-                }
-            })
-          
-        })
-        
-      }
-
-      function getBookingDetails(){
-        return new Promise((resolve, reject)=>{
-            const providerName = new URLSearchParams(search).get('provider')
-            const bookingID = new URLSearchParams(search).get('bookingref')
-            const bookingDeetsRef = db.collection('serviceProviders').doc(providerName).collection('bookingrequests').doc(bookingID)
-            bookingDeetsRef.get().then((doc)=>{
-                setBookingDetails(doc.data())
-                resolve(bookingdetalis)
-            }, (err)=>{
-                reject(err)
-            })
-        })
-    }
-
-      if(redirect){
+      if((bookingdetails === "DN_EXIST" || messages === "DN_EXIST")){
           return(<Redirect to="/" />
               )
       }
@@ -189,17 +81,17 @@ function BookingDetails({match, location}) {
         return(     
             <>
                 {
-                    finishedLoading ?
+                    (bookingdetails && messages) ?
                         <div>
                             <Card>
                                 <Card.Body>
                                     <Card.Title>
-                                        {bookingdetalis.client_name}
+                                        {bookingdetails.client_name}
                                     </Card.Title>
                                     <Card.Text>
-                                        {bookingdetalis.service_requested}
-                                        {bookingdetalis.service_notes}
-                                        {bookingdetalis.client_email}
+                                        {bookingdetails.service_requested}
+                                        {bookingdetails.service_notes}
+                                        {bookingdetails.client_email}
                                     </Card.Text>
                                 </Card.Body>
                             </Card>
@@ -233,7 +125,7 @@ function BookingDetails({match, location}) {
                                 </Card>
                             </div>
                         </div>
-                        : <h4>Loading...</h4>
+                    : <Spinner animation='border'/>
 
                 }
                  

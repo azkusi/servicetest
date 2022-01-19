@@ -1,0 +1,96 @@
+{
+    "themes" : {
+        "theme-1" : {
+            "id": "T_001",
+            "name": "Pink_Red_Text",
+            "colors": {
+            "body": "#FFFFFF",
+            "text": "#fc035a",
+            "background": "#FFFFFF"
+            }
+        },
+        "theme-2" : {
+            "id": "T_002",
+            "name": "Pink_Red_Background",
+            "colors": {
+                "body": "#fc035a",
+                "text": "#FFFFFF",
+                "background": "#fc035a"
+                }
+        },
+        "theme-3" : {
+            "id": "T_003",
+            "name": "Light_Blue_Text",
+            "colors": {
+                "body": "#FFFFFF",
+                "text": "#00aeff",
+                "background": "#FFFFFF"
+                }
+        },
+        "theme-4" : {
+            "id": "T_004",
+            "name": "Light_Blue_Background",
+            "colors": {
+                "body": "#00aeff",
+                "text": "#FFFFFF",
+                "background": "#00aeff"
+                }
+        },
+        "theme-5" : {
+            "id": "T_005",
+            "name": "Navy_Text",
+            "colors": {
+                "body": "#FFFFFF",
+                "text": "#02184a",
+                "background": "#FFFFFF"
+                }
+        },
+        "theme-6" : {
+            "id": "T_006",
+            "name": "Navy_Background",
+            "colors": {
+                "body": "#02184a",
+                "text": "#FFFFFF",
+                "background": "#02184a"
+                }
+        },
+        "theme-7" : {
+            "id": "T_007",
+            "name": "Blue_Green_Text",
+            "colors": {
+                "body": "#FFFFFF",
+                "text": "#00ffb7",
+                "background": "#FFFFFF"
+                }
+        },
+        "theme-8" : {
+            "id": "T_008",
+            "name": "Blue_Green_Background",
+            "colors": {
+                "body": "#00ffb7",
+                "text": "#FFFFFF",
+                "background": "#00ffb7"
+                }
+        },
+        "theme-9" : {
+            "id": "T_009",
+            "name": "Purple_Pink_Text",
+            "colors": {
+            "body": "#FFFFFF",
+            "text": "#a60aa6",
+            "background": "#FFFFFF"
+            }
+        },
+        "theme-10" : {
+            "id": "T_010",
+            "name": "Purple_Pink_Background",
+            "colors": {
+            "body": "#a60aa6",
+            "text": "#FFFFFF",
+            "background": "#a60aa6"
+            }
+        }
+    }
+    
+}
+  

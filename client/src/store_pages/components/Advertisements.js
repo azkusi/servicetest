@@ -19,7 +19,9 @@ function Advertisements({ serviceContent }){
     
 useEffect(()=>{
   const randomNumber = Math.floor(Math.random() * 11);
-  setAdChoice(ads[randomNumber])
+  if(adchoice !== null){
+    setAdChoice(ads[randomNumber])
+  }
 
 }, [])
 

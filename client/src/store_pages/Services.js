@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { Card, Button, Alert, Spinner } from "react-bootstrap";
-import { Link, useHistory } from "react-router-dom";
+import React, { useEffect, useState, useRef} from 'react';
+import { Link } from 'react-router-dom';
+
+import useServiceList from './hooks/useServiceList'
+
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
-// import 'react-pro-sidebar/dist/css/styles.css';
-import {auth, config} from '../firebase';
+import {config} from '../firebase';
+import { Card, Button, Alert, Spinner, ListGroup, Modal, Form } from "react-bootstrap";
+
+
 
 let db;
   var store_name;
@@ -18,103 +22,96 @@ let db;
   }
 
 
-export default function Services({serviceContent}) {
-    const [error, setError] = useState("")
-    const [servicesReady, setServicesReady] = useState(false)
-    const [loggedIn, setIsloggedIn] = useState(true)
-    const history = useHistory()
-    const [serviceCategories, setServiceCategories] = useState(null)
-    const [serviceSubCategories, setServiceSubCategories] = useState(null)
-    //setServices(services => ({...services, ...servicesB}))
-    const [services, setServices] = useState(null)
+function Services({ serviceContent }){
+    console.log("Calendar rerendered")
+    console.log("admin_data in Calendar: " + serviceContent.site_name)
+    const services = useServiceList(serviceContent.site_name)
 
-
-    useEffect(()=>{
-        dataReadyCheck().then(()=>{
-            var servicesB = {}
-            var i;
-            var j;
-            var serviceHolder;
-            for(i=0; i < serviceCategories.length; i++){
-                //set key in services object i.e. {main categoryM: ""}
-                serviceHolder = []
-                for(j=0; j < serviceSubCategories.length; j++){
-                    console.log("service category: " + serviceCategories[i] + " service name: " + JSON.stringify(serviceSubCategories[j]))
-                    if (serviceSubCategories[j].main_category === serviceCategories[i].toString()){
-                        serviceHolder.push(serviceSubCategories[j].service_name)
-                    }
-                    if(j === serviceSubCategories.length -1){
-                        //i.e. {maincategory1 : [subcategory1, subcategory2...subcategoryN]..., maincategoryM: []}
-                        servicesB[ serviceCategories[i] ] = serviceHolder
-                    }
-                }
-                if(i === serviceCategories.length - 1){
-                    console.log("Services inside loop: " + JSON.stringify(services))
-                    console.log("ServiceReady has been set to true")
-                    setServices(servicesB)
-                    setServicesReady(true)
-                }
+    
+    if(services){
+        if(services[0].length === 0){
+            return(
+                <>
+                    <h1>No Services Added Yet</h1>
+                </>
                 
-            }
-        }, ()=>{
-            history.push('/admin')
-        })
-        
-        
-    }, [serviceSubCategories, serviceCategories])
-
-
-    function dataReadyCheck(){
-      return new Promise((resolve, reject)=>{
-        setServiceCategories(serviceContent.service_content.service_categories)
-        setServiceSubCategories(serviceContent.service_content.services)
-        if(serviceSubCategories!== null && serviceCategories !== null){
-          console.log("Servicesubcategories: " + JSON.stringify(serviceSubCategories))
-          console.log("Servicecategories: " + JSON.stringify(serviceCategories))
-          resolve()
+            )
         }
-      })
-    }
-
-
-    if(servicesReady === false){
-        // console.log("ServiceReady = false atm")
-        return(
-            <Spinner animation="border"/>
-        )
+        else{
+            return(
+        
+                <>
+                    
+                    <div>
+                        {/* {console.log("" + JSON.stringify(services))} */}
+                        {services.map((item, index)=>{
+                            return(
+                                <>
+                                <Card>
+                                    {/* <Card.Img> </Card.Img> */}
+                                    <Card.Header>
+                                        {Object.keys(item)[0]} 
+                                        <br/>
+                                        
+                                    </Card.Header>
+                                    
+                                    <ListGroup variant="flush">
+                                        {Object.values(item)[0].map((service, i) =>{
+                                            return(
+                                                <>
+                                                <Card>
+                                                    {/* <Button onClick={deleteService(item.service_name)}> Delete Service </Button> */}
+                                                <ListGroup.Item>
+                                                    
+                                                    <Card.Title> 
+                                                        {service.service_name}
+                                                        <br/>
+                                                    </Card.Title>
+                                    
+                                                        <br/>
+                                                    <Card.Subtitle> 
+                                                        Price: {service.price}
+                                                    </Card.Subtitle>
+                                                    <br/>
+                                                    <Card.Subtitle>
+                                                    Duration: {service.duration}
+                                                    </Card.Subtitle>
+                                                
+                                                    <br/>
+                                                    <Card.Text>
+                                                        {service.description}
+                                                    </Card.Text>
+                                                    </ListGroup.Item>
+                                                
+                                                </Card>
+                                                <br/>
+                                                </>
+                                            )
+                                        })}
+                                    </ListGroup>
+                                </Card>
+                                <br/>
+                                <br/>
+                                </>
+                            )
+                            
+                        })}
+                        
+                    </div>
+                </>
+                );
+        }
+    
     }
     else{
-        console.log("ServiceReady = true atm")
-        console.log("services: " + JSON.stringify(services))
-
-
-        return (
-            <>
-
-            <div>
-                <h1> Services page </h1>
-                <br></br>
-
-                    <div>
-                    {Object.keys(services).map((key, index)=>{
-                        console.log("key: " + key)
-                        console.log("Services: " + JSON.stringify(services))
-                        return(
-                            <div>
-                                <h3> {key} </h3>
-                                <div>
-                                    {services[key].map((item, i) =>{
-                                        return(<h4> {item} </h4>)
-                                    })}
-                                </div>
-                            </div>
-                        )
-                    })}
-                    </div>
-
-            </div>
-
-            </>
+        return(
+            <Spinner animation="border" />
         )
     }
-}
+
+    
+
+        
+    }
+
+export default Services

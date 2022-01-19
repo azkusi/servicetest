@@ -23,13 +23,12 @@ export default function Gallery({serviceContent}) {
  
     const [selectedImg, setSelectedImg] = useState(null);
     // const [providerName, setProviderName] = useState(null)
-    const providerName = serviceContent.service_provider_name
+    const providerName = serviceContent.site_name
 
 
 
     // useEffect(()=>{
         
-    //     setProviderName(serviceContent.service_provider_name)
 
     // }, [])
 

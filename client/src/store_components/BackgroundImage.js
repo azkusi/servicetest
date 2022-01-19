@@ -5,32 +5,50 @@ function BackgroundImage({ serviceContent }){
     var frontPageTitle;
     var frontPageTagline;
 
-    // console.log("service content:" + JSON.stringify(serviceContent))
+    const imgUrl = serviceContent.service_content.page_background_image.url
+    const text_colour = serviceContent.service_content.title_tagline_colour.hex_code
 
-    if(serviceContent.service_content.page_styling === "choice_1"){
-        backgroundImage = "background-image-1";
-        frontPageTitle = "frontPageTitle-1";
-        frontPageTagline = "frontPageTagline-1";
-    }
-    else if(serviceContent.service_content.page_styling === "choice_2"){
-        backgroundImage = "background-image-2";
-        frontPageTitle = "frontPageTitle-2";
-        frontPageTagline = "frontPageTagline-2";
-    }
-    else{
-        backgroundImage = "background-image-3";
-        frontPageTitle = "frontPageTitle-3";
-        frontPageTagline = "frontPageTagline-3";
-    }
+
+    console.log("background image URL:" + imgUrl)
+
+    // if(serviceContent.service_content.page_styling === "choice_1"){
+    //     backgroundImage = "background-image-1";
+    //     frontPageTitle = "frontPageTitle-1";
+    //     frontPageTagline = "frontPageTagline-1";
+    // }
+    // else if(serviceContent.service_content.page_styling === "choice_2"){
+    //     backgroundImage = "background-image-2";
+    //     frontPageTitle = "frontPageTitle-2";
+    //     frontPageTagline = "frontPageTagline-2";
+    // }
+    // else{
+    //     backgroundImage = "background-image-3";
+    //     frontPageTitle = "frontPageTitle-3";
+    //     frontPageTagline = "frontPageTagline-3";
+    // }
+    
 
     return(
-        <div className={backgroundImage}>
+        <>
+        {/* <img src={imgUrl} id="background_img" alt="background_img" className="bg"/>
+        <h1 style={{"font-weight": "bold", "color": "white", "text-align": "centre"}}> {serviceContent.service_content.page_title}</h1>
+        <br></br>
+        <h3 style={{"font-weight": "bold", "color": "white", "text-align": "centre"}}> {serviceContent.service_content.description}</h3> */}
+
+        
+        <div style={{"background-image": `url(${imgUrl})`,
+        "background-repeat": "no-repeat", "background-attachment": "fixed", "background-size": "100% 100%",   
+        "min-height": "85%", "max-height": "85%", "opacity": "0.4", "min-width": "1024px", "width": "100%",
+        "height": "auto", "position": "fixed",
+        "bottom": "0","left": "0"}}>
             {/* <h3 style={{color: "white", fontWeight:"bold"}}> Service Provider Name goes here and tagline </h3> */}
-            <h1 className={frontPageTitle}> {serviceContent.service_content.page_title}</h1>
-            <br></br>
-            <h3 className={frontPageTagline}> {serviceContent.service_content.description}</h3>
         </div>
-    )
+        <h1 style={{"font-weight": "bold", "color": text_colour, "text-align": "center"}}> {serviceContent.service_content.page_title}</h1>
+            <br></br>
+        <h3 style={{"font-weight": "bold", "color": text_colour, "text-align": "center"}}> {serviceContent.service_content.description}</h3>
+
+        </>
+            )
 }
 
 export default BackgroundImage

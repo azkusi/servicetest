@@ -83,9 +83,9 @@
   align-items: center; */
   text-align: center;
   /* width: 25%; */
-  display: flex;
+  /* display: flex;
   list-style: none;
-  justify-content: space-between;
+  justify-content: space-between; */
 }
 
 .background-image-1 {
@@ -350,3 +350,56 @@
 .textFontStyle-3 {
 
 }
+
+
+img.bg {
+  /* Set rules to fill background */
+  /* min-height: 100%; */
+  min-height: 90%;
+  max-height: 90%;
+  min-width: 1024px;
+	
+  /* Set up proportionate scaling */
+  width: 100%;
+  height: auto;
+	
+  /* Set up positioning */
+  position: fixed;
+  /* top: 0; */
+  bottom: 0;
+  left: 0;
+
+  /* Set up effects */
+  opacity: 0.5;
+}
+
+@media screen and (max-width: 1024px) { /* Specific to this particular image */
+  img.bg {
+    left: 50%;
+    margin-left: -512px;   /* 50% */
+  }
+}
+
+/* .background-image {
+  background-image: url("https://www.thefashionisto.com/wp-content/uploads/2020/03/Hairdresser-Tools-800x534.jpg");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: 100% 100%;
+  
+  min-height: 90%;
+  max-height: 90%;
+  min-width: 1024px; */
+	
+  /* Set up proportionate scaling */
+  /* width: 100%;
+  height: auto; */
+	
+  /* Set up positioning */
+  /* position: fixed; */
+  /* top: 0; */
+  /* bottom: 0;
+  left: 0; */
+
+  /* Set up effects */
+  /* opacity: 0.5;
+} */
