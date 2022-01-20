@@ -28,11 +28,11 @@ function Services({ serviceContent }){
     const services = useServiceList(serviceContent.site_name)
 
     
-    if(services){
-        if(services[0].length === 0){
+    if(serviceContent.service_content.service_categories.length !== 0){
+        if(services === null){
             return(
                 <>
-                    <h1>No Services Added Yet</h1>
+                    <Spinner animation="border" />
                 </>
                 
             )
@@ -105,7 +105,7 @@ function Services({ serviceContent }){
     }
     else{
         return(
-            <Spinner animation="border" />
+            <h2>No Services Added Yet</h2>
         )
     }
 

@@ -47,31 +47,35 @@ const useServiceList = (providerName) => {
                     var j;
                     var serviceHolder;
                     if(serviceSubCategories && serviceCategories){
+                        if(serviceCategories.length === 0){
+                            resolve("NO_SERVICES")
+                        }else{
 
-                        console.log("services and categories set")
-                        for(i=0; i < serviceCategories.length; i++){
-                            //set key in services object i.e. {main categoryM: ""}
-                            var servicesB = {}
-                            serviceHolder = []
-                            for(j=0; j < serviceSubCategories.length; j++){
-                                console.log("service category: " + serviceCategories[i] + " service name: " + JSON.stringify(serviceSubCategories[j]))
-                                if (serviceSubCategories[j].main_category === serviceCategories[i].toString()){
-                                    serviceHolder.push(serviceSubCategories[j])
+                            console.log("services and categories set")
+                            for(i=0; i < serviceCategories.length; i++){
+                                //set key in services object i.e. {main categoryM: ""}
+                                var servicesB = {}
+                                serviceHolder = []
+                                for(j=0; j < serviceSubCategories.length; j++){
+                                    console.log("service category: " + serviceCategories[i] + " service name: " + JSON.stringify(serviceSubCategories[j]))
+                                    if (serviceSubCategories[j].main_category === serviceCategories[i].toString()){
+                                        serviceHolder.push(serviceSubCategories[j])
+                                    }
+                                    if(j === serviceSubCategories.length -1){
+                                        //i.e. {maincategory1 : [subcategory1, subcategory2...subcategoryN]..., maincategoryM: []}
+                                        servicesB[ serviceCategories[i] ] = serviceHolder
+                                        servicesArray.push(servicesB)
+                                    }
                                 }
-                                if(j === serviceSubCategories.length -1){
-                                    //i.e. {maincategory1 : [subcategory1, subcategory2...subcategoryN]..., maincategoryM: []}
-                                    servicesB[ serviceCategories[i] ] = serviceHolder
-                                    servicesArray.push(servicesB)
+                                if(i === serviceCategories.length - 1){
+                                    console.log("Services inside loop: " + JSON.stringify(servicesB))
+                                    console.log("ServiceReady has been set to true")
+                                    // setServices(servicesB)
+                                    // setServicesReady(true)
+                                    resolve(servicesArray)
                                 }
+                                
                             }
-                            if(i === serviceCategories.length - 1){
-                                console.log("Services inside loop: " + JSON.stringify(servicesB))
-                                console.log("ServiceReady has been set to true")
-                                // setServices(servicesB)
-                                // setServicesReady(true)
-                                resolve(servicesArray)
-                            }
-                            
                         }
                     }
                         console.log("numbers is about to change/cause rerender...")

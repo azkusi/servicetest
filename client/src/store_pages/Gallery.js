@@ -34,19 +34,29 @@ export default function Gallery({serviceContent}) {
 
     if(providerName === null){
         return(
-          <h4> Loading... </h4>
+          <Spinner animation="border"/>
         )
     }else{
         return (
+          <>
+          <h2> Gallery </h2>
+          {(serviceContent.service_content.gallery_images.length === 0) ? 
+            <h2>No Images Added Yet</h2>
+            :
             <div className="Gallery">
-              <h2> Gallery </h2>
+              
+
+              
 
               {providerName && <ImageGrid provider_Name={providerName} setSelectedImg={setSelectedImg} />}
               { selectedImg && (
                 <Modal selectedImg={selectedImg} setSelectedImg={setSelectedImg} />
               )}
             </div>
+          }
+          </>
           );
+
     }
 
 
