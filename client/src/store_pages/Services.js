@@ -41,7 +41,7 @@ function Services({ serviceContent }){
             return(
         
                 <>
-                    
+                    <h1>Services</h1>
                     <div>
                         {/* {console.log("" + JSON.stringify(services))} */}
                         {services.map((item, index)=>{

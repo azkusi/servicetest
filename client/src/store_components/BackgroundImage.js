@@ -29,25 +29,21 @@ function BackgroundImage({ serviceContent }){
     
 
     return(
-        <>
-        {/* <img src={imgUrl} id="background_img" alt="background_img" className="bg"/>
-        <h1 style={{"font-weight": "bold", "color": "white", "text-align": "centre"}}> {serviceContent.service_content.page_title}</h1>
-        <br></br>
-        <h3 style={{"font-weight": "bold", "color": "white", "text-align": "centre"}}> {serviceContent.service_content.description}</h3> */}
-
         
+        <div style={{"textAlign": "center"}}>
         <div style={{"background-image": `url(${imgUrl})`,
         "background-repeat": "no-repeat", "background-attachment": "fixed", "background-size": "100% 100%",   
         "min-height": "85%", "max-height": "85%", "opacity": "0.4", "min-width": "1024px", "width": "100%",
         "height": "auto", "position": "fixed",
         "bottom": "0","left": "0"}}>
-            {/* <h3 style={{color: "white", fontWeight:"bold"}}> Service Provider Name goes here and tagline </h3> */}
         </div>
-        <h1 style={{"font-weight": "bold", "color": text_colour, "text-align": "center"}}> {serviceContent.service_content.page_title}</h1>
+        <h1 style={{"font-weight": "bold", "color": text_colour, "position": "absolute", "top": "50%", "left": "20%", "z-index": "10"}}> 
+        {serviceContent.service_content.page_title}
+        </h1>
             <br></br>
-        <h3 style={{"font-weight": "bold", "color": text_colour, "text-align": "center"}}> {serviceContent.service_content.description}</h3>
+        <h4 style={{"font-weight": "bold", "color": text_colour, "position": "absolute", "top": "58%", "left": "20%", "z-index": "10"}}> {serviceContent.service_content.description}</h4>
 
-        </>
+        </div>
             )
 }
 

@@ -71,7 +71,7 @@ function Messages ({ serviceContent }) {
     return (
       <>
       <div>
-        <h2>Messages</h2> 
+        <h1>Send a Message</h1> 
       </div>
       <div>
       {!success && 

@@ -33,6 +33,7 @@ function BookingRequest ({ serviceContent }) {
   // const [value, setValue] = useState()
   // const onInput = ({target:{value}}) => setValue(value)
   const offerred_services = serviceContent.service_content.services
+  
 
 
   useEffect(()=>{
@@ -83,7 +84,7 @@ if(success === null){
   return (
     <>
       <div>
-        <h2>Services</h2> 
+        <h1>Send a Booking Request</h1> 
       </div>
       <div>
       <Card>

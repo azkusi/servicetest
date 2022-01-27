@@ -11,6 +11,8 @@ import config from '../firebase';
 import { Spinner, Form, Button, Card } from "react-bootstrap";
 import {useLocation, Redirect} from 'react-router-dom'
 import useGetConvo from './hooks/useGetConvo';
+import useWindowSize from '../store_pages/hooks/useWindowSize';
+import ReturnHome from './components/ReturnHome';
 
 let db;
   var store_name;
@@ -24,21 +26,30 @@ let db;
   }
 
 function Conversations({match, location}) {
-    // console.log("reached FullConversations component")
     const search = useLocation().search;
-    
-    // const [firebaseConversationID, setfirebaseConversationID] = useState("") 
+    const {width, height} = useWindowSize()
+    const [screenW, setScreenW] = useState(0.7*width)
 
-    // const [messages, setMessages] = useState([])
+    const msgStyling = {"client": {"padding": "5px", "border-radius": "5px", "background-color": "#0574DD", "color": "white", "maxWidth": `${0.4*width}px`, "margin-right":"5px", "margin-left": "auto"},
+    "provider": {"padding": "5px", "border-radius": "5px", "background-color": "white", "color": "black", "maxWidth": `${0.4*width}px`, "margin-left":"5px", "margin-right": "auto"} }
+
+    const provider_Name = new URLSearchParams(search).get('provider')
+
     const messages = useGetConvo()
     const [redirect, setRedirect] = useState(false);
     const [finishedLoading, setFinishedLoading] = useState(false)
     const messageRef = useRef()
     var messageList = [];
 
-    // useEffect(()=>{
-        
-    // }, [])
+    useEffect(()=>{
+      if(width < 672){
+        setScreenW(0.8*width)
+      }else if(width < 990){
+        setScreenW(0.8*width)
+      }else{
+        setScreenW(0.5*width)
+      }
+    }, [width, height])
 
     async function onFormSubmit (e){
         const providerName = new URLSearchParams(search).get('provider')
@@ -83,42 +94,59 @@ function Conversations({match, location}) {
               )
       }
       else{
-        return(     
-            <>
+        return(  
+          <div style={{"maxHeight": height}}>   
+          <ReturnHome/>
+            <div style={{"display": "grid", "place-items": "center", "align-content": "center"}}>
+                <h2 style={{"position": "absolute", "top": "0"}}> Your Messages</h2>
+
                 {messages ?
                 <>
-                    <div>
+                  <Card style={{"width": `${screenW}px`, "height": `${0.7*height}px`, "position": "absolute", "maxHeight": `${0.7*height}px`, "overflowY": "auto", "top":"10%" }}>
+
                         {messages.map((item, index)=>{
                         return(
-                            <li key={index}>
-                                {/* color={item.message_sent_by} */}
+                          <>
+                          <br/>
+                          <div style={msgStyling[item.message_sent_by]}>
+                            <li key={index} style={{"listStyle": "none"}}>
+                            {item.message_sent_by === 'client' ? <h5>you:</h5> : <h5>{provider_Name}:</h5> }
                                 <h4>
                                     {item.message}
                                 </h4>
                             </li>
+                            </div>
+                          </>
                         )
                         })}
-                    </div>
-                    <div>
-                        <Card>
-                            <Card.Body>
-                                <Form onSubmit={onFormSubmit}>
-                                
-                                <Form.Group id="message">
-                                    <Form.Label>Message</Form.Label>
-                                    <Form.Control type="text" ref={messageRef} placeholder="Type message" required />
-                                </Form.Group>
-                                <Button type="submit">Send Message</Button>
-                                </Form>
-                            </Card.Body>
-                        </Card>
+                    </Card>
+                    <div style={{"position": "absolute", "bottom": "0px", "display": "table"}}>
+                        
+                      <Form inline onSubmit={onFormSubmit}>
+                        <div style={{"display": "table-row"}}>
+                          
+                          <div style={{"display": "table-cell"}}>
+                            <Form.Group id="message">
+                              <Form.Control type="text" ref={messageRef} placeholder="Type message" required />
+                            </Form.Group>
+                          </div>
+
+                          <div style={{"display": "table-cell"}}>
+                            <Button type="submit">Send Message</Button>
+                          </div>
+
+                        </div>
+                      
+                      </Form>
+
                     </div>
                 </>
                 :
                 <Spinner animation='border'/>
                 }
                  
-            </>
+            </div>
+            </div>
         )
       }
 

@@ -39,7 +39,7 @@ export default function Gallery({serviceContent}) {
     }else{
         return (
           <>
-          <h2> Gallery </h2>
+          <h1> Gallery </h1>
           {(serviceContent.service_content.gallery_images.length === 0) ? 
             <h2>No Images Added Yet</h2>
             :

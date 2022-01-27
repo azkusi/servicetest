@@ -95,13 +95,13 @@ function App() {
       return (
         <>
         
-         {(!noNav) && <Navigation serviceContent={content} />}
+         {(!noNav && location.pathname !== '/booking-request/details' && location.pathname !== '/conversations') && <Navigation serviceContent={content} />}
   
-          {((location.pathname !== "/") && (!noNav)) && 
+          {/* {((location.pathname !== "/") && (!noNav)) && 
             <div>
               <Advertisements/>
             </div>
-          }
+          } */}
   
           <Switch>
   
