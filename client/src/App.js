@@ -119,7 +119,7 @@ function App() {
   
             <Route exact path="/booking-request">
             { (!content) && <Spinner/> }
-              <BookingRequest serviceContent={content} />
+              {content && <BookingRequest serviceContent={content} />}
             </Route>
   
             <Route exact path="/booking-request/details">
@@ -137,10 +137,10 @@ function App() {
               {content && <Messages serviceContent={content} />}
             </Route>
 
-            <Route exact path="/calendar">
+            {/* <Route exact path="/calendar">
             { (!content) && <Spinner/> }
               {content && <Calendar serviceContent={content} />}
-            </Route>
+            </Route> */}
   
             <Route exact path="/conversations">
             {/* { (!content) && <Spinner/> } */}

@@ -108,9 +108,24 @@ function BookingDetails({match, location}) {
                                         {bookingdetails.client_name}
                                     </Card.Title>
                                     <Card.Text>
-                                        {bookingdetails.service_requested}
-                                        {bookingdetails.service_notes}
-                                        {bookingdetails.client_email}
+                                        Service: {bookingdetails.service_requested}
+                                        Notes: {bookingdetails.service_notes}
+                                        <Form.Label>Event Start</Form.Label>
+                                        <Card.Text
+                                            type="text"
+                                            disabled={true}
+                                            // ref={eventTodayNotesRef}
+                                            placeholder={`${new Date(bookingdetails.startTime).toString()}`}
+                                        />
+                                        <br/>
+
+                                        <Form.Label>Event End</Form.Label>
+                                        <Card.Text 
+                                        type="text"
+                                        disabled={true}
+                                        // ref={eventTodayNotesRef}
+                                        placeholder={`${new Date(bookingdetails.endTime).toString()}`}
+                                        />
                                     </Card.Text>
                                 </Card.Body>
                             </Card>

@@ -4,9 +4,14 @@
 
 import React, { useRef, useState, useEffect } from "react";
 import { Alert, Form, Button, Card } from "react-bootstrap";
-// import DropdownButton from 'react-bootstrap/DropdownButton'
-// import Dropdown from 'react-bootstrap/Dropdown'
-// import Alert from '@mui/material/Alert';
+
+import FullCalendar from '@fullcalendar/react'; // must go before plugins
+import dayGridPlugin from '@fullcalendar/daygrid'; // a plugin!
+import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClick
+import listPlugin from '@fullcalendar/list';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import useGetEvents from './hooks/useGetEvents';
+import DateTimePicker from '../../node_modules/react-datetime-picker'
 
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
@@ -29,18 +34,38 @@ function BookingRequest ({ serviceContent }) {
   const emailRef = useRef()
   const serviceRef = useRef()
   const notesRef = useRef()
-  // const [serviceProviderData, setServiceProviderData] = useState(serviceContent);
-  // const [value, setValue] = useState()
-  // const onInput = ({target:{value}}) => setValue(value)
+  const provider_events = useGetEvents(serviceContent.site_name)
+
+  const [option, setOption] = useState(null)
+
+  const [serviceObjectRequested,setServiceObjectRequested] = useState(null)
+
   const offerred_services = serviceContent.service_content.services
+  const [initialView, setInitialView] = useState("timeGridWeek")
+  const [initialDate, setInitialDate] = useState(new Date())
+  const [date, setDate] = useState(new Date());
+  const [bookingDate, setBookingDate] = useState(new Date())
+  const [bookingDateSelected, setBookingDateSelected] = useState(null)
+  const [service_requested, setService_Requested] = useState("");
+
+
+  const calendarRef = useRef()
   
 
 
   useEffect(()=>{
-    console.log("store content" + JSON.stringify(serviceContent))
-    //.then()
+    console.log("services: " + JSON.stringify(serviceContent.service_content.services))
+    var i = 0;
+    if(offerred_services){
+      console.log("running if in useEffect")
+      for(i=0; i< offerred_services.length; i++){
+          if(offerred_services[i].service_name === service_requested){
+              setServiceObjectRequested(offerred_services[i])
+          }
+      }  
+  }
     
-}, [])
+}, [service_requested])
  
  
   async function onFormSubmit (e){
@@ -55,24 +80,56 @@ function BookingRequest ({ serviceContent }) {
     console.log("Message: " + messageSent)
     
     try{
-      setSuccess(true)
-      const currentTime = Date.now()
-      const convoref = db.collection('serviceProviders').doc(serviceContent.site_name).collection('bookingrequests').doc()
-      const convorefID = convoref.id
-      console.log("convorefID is: " + convorefID)
-      await convoref.set({"last_message_sent": messageSent, "last_message_sent_by": "client", "client_name": nameSent, "client_email": emailSent, "service_requested" : serviceChosen, "service_notes": serviceNotes, "timestamp": currentTime, "booking_status": "pending", "provider_read_status": "unread"})
-      db.collection('serviceProviders').doc(serviceContent.site_name).collection('bookingrequests').doc(convorefID).collection('messages').add({"message": messageSent, "client_name": nameSent, "client_email": emailSent, "message_sent_by": "client", "timestamp": currentTime, "provider_read_status": "unread"})
-      .then(()=>{
-        messageRef.current.value = ''
-      })
-      // get booking_request_notifications array, push new notification and bookingrequest docID the notification came from not the messages docID
-      
-      const bookingRequestNotifRef = db.collection('serviceProviders').doc(serviceContent.site_name)
-      bookingRequestNotifRef.get().then(async (doc)=>{
-        let booking_requests_notif_array = doc.data().booking_requests_notifications
-        let temp_msg_notif_array = booking_requests_notif_array.push(convorefID)
-        await bookingRequestNotifRef.update({"booking_requests_notifications" : firebase.firestore.FieldValue.arrayUnion(...booking_requests_notif_array)}) 
-      })      
+      console.log("service_requested is: " + service_requested)
+      console.log("offered services are: " + JSON.stringify(serviceObjectRequested))
+      if(bookingDateSelected === null){
+        alert("Please select a date")
+        return null
+      }else{
+        if(service_requested === null || service_requested === ""){
+          alert('Please select a service')
+          return null;
+        }
+        console.log("serviceRequested object: " + JSON.stringify(serviceObjectRequested))
+        const currentTime = Date.now()
+        const bookingref = db.collection('serviceProviders').doc(serviceContent.site_name).collection('bookingrequests').doc()
+        const bookingrefID = bookingref.id
+
+        const startTime = new Date(bookingDate.toISOString())
+        let service_length = parseFloat(serviceObjectRequested.duration);
+        var addMlSeconds = 60 * 60 * 1000 * service_length;
+        const endTime = new Date(startTime.getTime() + addMlSeconds)
+
+        console.log("service length is: " + service_length)
+        bookingref.set({
+          "last_message_sent": messageSent, "last_message_sent_by": "client", 
+          "client_name": nameSent, "client_email": emailSent, 
+          "service_requested" : serviceChosen, "service_notes": serviceNotes, 
+          "timestamp": currentTime, "booking_status": "pending", 
+          "provider_read_status": "unread",
+          "startTime": bookingDate.toISOString(), "endTime": endTime.toISOString()
+        }).then(()=>{
+          db.collection('serviceProviders').doc(serviceContent.site_name).collection('bookingrequests').doc(bookingrefID).collection('messages')
+          .add({"message": messageSent, "client_name": nameSent, 
+                "client_email": emailSent, "message_sent_by": "client", 
+                "timestamp": currentTime, "provider_read_status": "unread"
+              }).then(()=>{
+                messageRef.current.value = ''
+                setSuccess(true)
+                return null
+              })
+          
+        })
+        // get booking_request_notifications array, push new notification and bookingrequest docID the notification came from not the messages docID
+        
+        const bookingRequestNotifRef = db.collection('serviceProviders').doc(serviceContent.site_name)
+        bookingRequestNotifRef.get().then(async (doc)=>{
+          let booking_requests_notif_array = doc.data().booking_requests_notifications
+          let temp_booking_notif_array = booking_requests_notif_array.push(bookingrefID)
+          await bookingRequestNotifRef.update({"booking_requests_notifications" : firebase.firestore.FieldValue.arrayUnion(...booking_requests_notif_array)}) 
+        })
+      }
+            
     }
     catch(err){
       console.log("error is: " + err)
@@ -85,6 +142,47 @@ if(success === null){
     <>
       <div>
         <h1>Send a Booking Request</h1> 
+      </div>
+
+      <div>
+      <FullCalendar
+            plugins={[ dayGridPlugin, interactionPlugin, listPlugin, timeGridPlugin ]}
+            initialView={initialView}
+            events={provider_events}
+            initialDate={initialDate}
+            ref={calendarRef}
+            customButtons={
+              {
+                changeToMonthView: {
+                  text: "Month",
+                  click: function () {
+                    calendarRef.current.getApi().changeView("dayGridMonth", date.date);
+                  }
+                }, changeToWeekView: {
+                  text: "Week",
+                  click: function(){
+                    calendarRef.current.getApi().changeView("timeGridWeek", date.date);
+                    }
+                  } 
+              }
+          }
+            dateClick={(date)=>{
+              console.log("Full Calendar API date is: " + date.date + " type is: " + typeof(date.date))
+              console.log("date.dateStr is: " + date.dateStr + " type is: " + typeof(date.dateStr))
+              console.log("date.date is: " + date.date.toDateString())     
+              setDate(date.date)
+              calendarRef.current.getApi().changeView("timeGridDay", date.date);
+              //console.log("current view is: " + JSON.stringify(calendarRef.current.getApi().view))
+           }}
+
+           
+            headerToolbar={{
+              center: "changeToWeekView changeToMonthView",
+              left: "title",
+              right: "today prev,next"
+              
+            }}
+          />
       </div>
       <div>
       <Card>
@@ -101,15 +199,25 @@ if(success === null){
           </Form.Group>
 
           <Form.Label>Select Service</Form.Label>
-          <Form.Select aria-label="Select Service">
-
+          <Form.Control
+           aria-label="Select Service"
+           as="select"
+            value={service_requested}
+            onChange={e => {
+              console.log("e.target.value", e.target.value);
+              setOption(e)
+              setService_Requested(e.target.value)
+            }
+          }
+           >
+          <option ref={serviceRef} value=""></option>
           {offerred_services.map((item, index)=>{
             return(
-              <option ref={serviceRef} value={index.toString()}>{item.service_name}</option>
+              <option ref={serviceRef} value={item.service_name}>{item.service_name}</option>
             )
             
           })}
-          </Form.Select>
+          </Form.Control>
 
           
           <Form.Group id="notes">
@@ -117,6 +225,18 @@ if(success === null){
             <Form.Control type="text" ref={notesRef} placeholder="Type message" required />
           </Form.Group>
 
+          <br/>
+
+          <DateTimePicker
+            onChange={(value)=>{
+              setBookingDate(value)
+              setBookingDateSelected(true)}}
+            value={bookingDate}
+            disableClock={true}
+          />
+
+          <br/>
+          
           <Form.Group id="message">
             <Form.Label>Message</Form.Label>
             <Form.Control type="text" ref={messageRef} placeholder="Type message" required />
