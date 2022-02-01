@@ -84,6 +84,8 @@ function App() {
 
   function getSubdomain(){
     // const subdomainString = window.location.hostname
+    console.log("href url: " + window.location.href)
+    console.log("document url: " + document.URL)
     const subdomainString = host_name
     providerName = subdomainString.replace('.myservviio.com', '')
     providerName = providerName.replace('.localhost', '')
@@ -99,6 +101,8 @@ function App() {
                   // console.log("No such provider!");
                   setErrorPage(true)
               }
+      },(err)=>{
+        console.log("provider probably doesn't exist, error was: " + err)
       })
     }
     

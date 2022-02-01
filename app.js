@@ -21,7 +21,7 @@ app.use(cors());
 
 app.use('*', function(req, res, next){
   const host_name = req.hostname
-  io.once("connection", function(socket){
+  io.on("connection", function(socket){
     // if(!sentHostName){
       console.log("New client connected");
       socket.emit("host_name", {"host_name": host_name})
