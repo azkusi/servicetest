@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import * as themes from '../themes.json';
 import useWindowSize from '../store_pages/hooks/useWindowSize';
 import {Dropdown, DropdownButton, Navbar, Nav, NavDropdown} from 'react-bootstrap';
-import { width } from '@mui/system';
 
 function Navigation({ serviceContent }){
   const [screenW, setScreenW] = useState(375)
@@ -30,6 +29,7 @@ function Navigation({ serviceContent }){
               <NavDropdown
               id="nav-dropdown-dark-example"
               title="Menu"
+              align="end"
               >
                 {/* <DropdownButton id="menu" title="Menu"> */}
                 <NavDropdown.Item style={{"color": "black"}} href="/services">Services</NavDropdown.Item>
