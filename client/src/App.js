@@ -68,25 +68,30 @@ function App() {
 
 
   useEffect(() => {
-    socket.on("host_name", (hostName) => {
-      console.log("host name is: " + JSON.stringify(hostName)); // true
-      setHost_Name(hostName.host_name)
-      socket.disconnect()
-    });
+    // socket.on("host_name", (hostName) => {
+    //   console.log("host name is: " + JSON.stringify(hostName)); // true
+    //   setHost_Name(hostName.host_name)
+    //   socket.disconnect()
+    // });
 
-    if(host_name){
-      getSubdomain()
-    }
+    // if(host_name){
+    //   getSubdomain()
+    // }
+    getSubdomain()
     
 
-  }, [host_name])
+  }, [])
 
 
   function getSubdomain(){
     // const subdomainString = window.location.hostname
     console.log("href url: " + window.location.href)
     console.log("document url: " + document.URL)
-    const subdomainString = host_name
+    const baseURL = new URL(document.URL)
+
+    console.log("hostname: " + baseURL.hostname)
+    // const subdomainString = document.URL.replace('http://', '').replace(':5000','')
+    const subdomainString = baseURL.hostname
     providerName = subdomainString.replace('.myservviio.com', '')
     providerName = providerName.replace('.localhost', '')
 
