@@ -46,16 +46,34 @@ const port = process.env.PORT || 5000;
 
 function App() {
 
+  const socket = io();
+  socket.connect(`http://localhost:${port}`);
+
+  socket.on("connect", () => {
+    console.log("made socket connection"); // true
+  });
+  
+
+
+
+
   const [content, setContent] = useState(null);
   const [isPending, setIsPending] = useState(true);
   const location = useLocation();
   const [errorPage, setErrorPage] = useState(false)
   const [noNav, setNoNav] = useState(false)
-  const host_name = useGetHostName()
+  // const host_name = useGetHostName()
+  const [host_name, setHost_Name] = useState(null)
 
 
 
   useEffect(() => {
+    socket.on("host_name", (hostName) => {
+      console.log("host name is: " + JSON.stringify(hostName)); // true
+      setHost_Name(hostName.host_name)
+      socket.disconnect()
+    });
+
     if(host_name){
       getSubdomain()
     }

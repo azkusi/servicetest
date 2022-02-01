@@ -15,9 +15,22 @@ var store_front_content;
 var booking_page_content;
 var account_details;
 
+// let sentHostName = false
 
 app.use(cors());
 
+app.use('*', function(req, res, next){
+  const host_name = req.hostname
+  io.once("connection", function(socket){
+    // if(!sentHostName){
+      console.log("New client connected");
+      socket.emit("host_name", {"host_name": host_name})
+      socket.disconnect()
+      // sentHostName = true
+    // }
+  })
+  next()
+})
 
 app.use(express.static(path.join(__dirname, "build")))
 
