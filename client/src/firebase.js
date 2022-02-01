@@ -1,6 +1,7 @@
 import firebase from "firebase/compat/app"
 import "firebase/compat/auth"
 
+
 // const app = firebase.initializeApp({
 //     apiKey: "AIzaSyBA8Oj4PDbc826IzdhGDDU579yJ2pL3N9o",
 //     authDomain: "serviiotest.firebaseapp.com",

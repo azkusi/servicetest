@@ -15,7 +15,7 @@ import BookingRequest from './store_pages/BookingRequest';
 import Messages from './store_pages/Messages';
 import Conversations from './store_pages/Conversation';
 import BookingDetails from './store_pages/BookingDetails';
-import { Spinner } from 'react-bootstrap';
+import { Alert, Spinner } from 'react-bootstrap';
 import Advertisements from './store_pages/components/Advertisements';
 import NonExistentRoute from './store_pages/NonExistentRoute';
 import NonExistentStore from './store_pages/NonExistentStore';
@@ -45,20 +45,23 @@ if (!firebase.apps.length) {
 const port = process.env.PORT || 5000;
 
 function App() {
-  
   const [content, setContent] = useState(null);
   const [isPending, setIsPending] = useState(true);
   const location = useLocation();
   const [errorPage, setErrorPage] = useState(false)
   const [noNav, setNoNav] = useState(false)
+  const [error, setError] = useState(false)
   // const host_name = useGetHostName()
   const [host_name, setHost_Name] = useState(null)
 
 
 
   useEffect(() => {
-
-    getSubdomain()
+    firebase.auth().signInAnonymously().then(()=>{
+      getSubdomain()
+    },()=>{
+      setError(true)
+    })
     
 
   }, [])
@@ -66,31 +69,35 @@ function App() {
 
   function getSubdomain(){
     // const subdomainString = window.location.hostname
-    console.log("href url: " + window.location.href)
-    console.log("document url: " + document.URL)
-    const baseURL = new URL(document.URL)
+  
+      // console.log("user is: " + JSON.stringify(user))
+      // console.log("email is: " + user.email)
+      console.log("href url: " + window.location.href)
+      console.log("document url: " + document.URL)
+      const baseURL = new URL(document.URL)
 
-    console.log("hostname: " + baseURL.hostname)
-    // const subdomainString = document.URL.replace('http://', '').replace(':5000','')
-    const subdomainString = baseURL.hostname
-    providerName = subdomainString.replace('.myservviio.com', '')
-    providerName = providerName.replace('.localhost', '')
+      console.log("hostname: " + baseURL.hostname)
+      // const subdomainString = document.URL.replace('http://', '').replace(':5000','')
+      const subdomainString = baseURL.hostname
+      providerName = subdomainString.replace('.myservviio.com', '')
+      providerName = providerName.replace('.localhost', '')
 
-    if(content === null){
-      db.collection("serviceProviders").doc(providerName)
-      .get().then((doc) => {
-              if (doc.exists) {
-                  // console.log("Store exists: " + JSON.stringify(doc.data()))
-                  setContent({"site_name" : doc.id, "service_content":doc.data()})
-                  setIsPending(false)
-              } else {
-                  // console.log("No such provider!");
-                  setErrorPage(true)
-              }
-      },(err)=>{
-        console.log("provider probably doesn't exist, error was: " + err)
-      })
-    }
+      if(content === null){
+        db.collection("serviceProviders").doc(providerName)
+        .get().then((doc) => {
+                if (doc.exists) {
+                    // console.log("Store exists: " + JSON.stringify(doc.data()))
+                    setContent({"site_name" : doc.id, "service_content":doc.data()})
+                    setIsPending(false)
+                } else {
+                    // console.log("No such provider!");
+                    setErrorPage(true)
+                }
+        },(err)=>{
+          console.log("provider probably doesn't exist, error was: " + err)
+        })
+      }
+    
     
 
 
@@ -99,6 +106,10 @@ function App() {
     return(
       <NonExistentStore/>
     )
+  }else if(error){
+    <Alert variant='danger'>
+      Error occurred please contact help@servviio.com
+    </Alert>
   }
   else{
 
