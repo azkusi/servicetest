@@ -25,9 +25,11 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import "firebase/compat/storage";
 import {config} from './firebase';
+import useGetHostName from './store_pages/hooks/useGetHostName';
 
 const { io } = require("socket.io-client");
 const axios = require('axios');
+
 var providerName;
 let db;
 
@@ -49,16 +51,22 @@ function App() {
   const location = useLocation();
   const [errorPage, setErrorPage] = useState(false)
   const [noNav, setNoNav] = useState(false)
+  const host_name = useGetHostName()
+
 
 
   useEffect(() => {
-    getSubdomain()
+    if(host_name){
+      getSubdomain()
+    }
+    
 
-  }, [])
+  }, [host_name])
 
 
   function getSubdomain(){
-    const subdomainString = window.location.hostname
+    // const subdomainString = window.location.hostname
+    const subdomainString = host_name
     providerName = subdomainString.replace('.myservviio.com', '')
     providerName = providerName.replace('.localhost', '')
 

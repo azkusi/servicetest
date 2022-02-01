@@ -1,11 +1,9 @@
 //==================================================================
-//            FULL CONVERSATION OF MESSAGES RETRIEVAL HOOK
+//            CALENDAR EVETNS RETRIEVAL HOOK
 //------------------------------------------------------------------
-//   Hook uses (react-set) location prop that holds information
-// about the current path and url info, to retrieve the all the messages
-// from a specific conversation between a client and the service provider
-//This location prop should contain specific query parameters 
-// to enable to help search firebase for the correct conversation
+//   Hook searches for the events relating to this service provider
+// in firestore, using the providerName prop passed to it 
+// to enable to help search firestore for the correct events
 //==================================================================
 
 
