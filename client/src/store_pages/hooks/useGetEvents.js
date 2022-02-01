@@ -18,13 +18,12 @@ import {config} from '../../firebase';
 
 let db;
 if (!firebase.apps.length) {
-    db = firebase.firestore()
     firebase.initializeApp(config);
+    db = firebase.firestore()
   }else {
     db = firebase.app().firestore() // if already initialized, use that one
-
-
   }
+  
 
 
 

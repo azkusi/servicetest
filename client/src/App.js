@@ -45,18 +45,7 @@ if (!firebase.apps.length) {
 const port = process.env.PORT || 5000;
 
 function App() {
-
-  const socket = io();
-  socket.connect(`http://localhost:${port}`);
-
-  socket.on("connect", () => {
-    console.log("made socket connection"); // true
-  });
   
-
-
-
-
   const [content, setContent] = useState(null);
   const [isPending, setIsPending] = useState(true);
   const location = useLocation();
@@ -68,15 +57,7 @@ function App() {
 
 
   useEffect(() => {
-    // socket.on("host_name", (hostName) => {
-    //   console.log("host name is: " + JSON.stringify(hostName)); // true
-    //   setHost_Name(hostName.host_name)
-    //   socket.disconnect()
-    // });
 
-    // if(host_name){
-    //   getSubdomain()
-    // }
     getSubdomain()
     
 

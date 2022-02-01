@@ -19,19 +19,6 @@ var account_details;
 
 app.use(cors());
 
-// app.use('*', function(req, res, next){
-//   const host_name = req.hostname
-//   io.on("connection", function(socket){
-//     // if(!sentHostName){
-//       console.log("New client connected");
-//       socket.emit("host_name", {"host_name": host_name})
-//       socket.disconnect()
-//       // sentHostName = true
-//     // }
-//   })
-//   next()
-// })
-
 app.use(express.static(path.join(__dirname, "build")))
 
 
