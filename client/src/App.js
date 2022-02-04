@@ -1,5 +1,5 @@
 //import logo from './logo.svg';
-// import './App.css';
+import './App.css';
 import Home from './store_pages/BookingRequest'
 import {BrowserRouter as Router, Route, Switch, useLocation} from 'react-router-dom';
 import Lost from './store_pages/NonExistentRoute';
@@ -121,14 +121,20 @@ function App() {
     else{
       return (
         <>
+        <div className='landingPage'>
+
+          <div style={{"padding": "40px"}}>
         
-         {(!noNav && location.pathname !== '/booking-request/details' && location.pathname !== '/conversations') && <Navigation serviceContent={content} />}
-  
-          {/* {((location.pathname !== "/") && (!noNav)) && 
-            <div>
-              <Advertisements/>
-            </div>
-          } */}
+            {(!noNav && location.pathname !== '/booking-request/details' && location.pathname !== '/conversations') && <Navigation serviceContent={content} />}
+    
+            {/* {((location.pathname !== "/") && (!noNav)) && 
+              <div>
+                <Advertisements/>
+              </div>
+            } */}
+          </div>
+
+          <div>
   
           <Switch>
   
@@ -179,6 +185,8 @@ function App() {
             </Route>
             
           </Switch>
+          </div>
+        </div>
         </>
         
       );
