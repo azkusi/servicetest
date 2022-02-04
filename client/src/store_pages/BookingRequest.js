@@ -222,7 +222,7 @@ if(success === null){
           
           <Form.Group id="notes">
             <Form.Label>Extra Notes</Form.Label>
-            <Form.Control type="text" ref={notesRef} placeholder="Type message" required />
+            <Form.Control type="text" ref={notesRef} placeholder="Type message" />
           </Form.Group>
 
           <br/>
@@ -239,11 +239,10 @@ if(success === null){
           
           <Form.Group id="message">
             <Form.Label>Message</Form.Label>
-            <Form.Control type="text" ref={messageRef} placeholder="Type message" required />
+            <Form.Control type="text" ref={messageRef} placeholder="Type message" />
           </Form.Group>
           <Button type="submit">Submit Booking Request</Button>
 
-          <Form.Label>Input service time using calendar:</Form.Label>
         </Form>
         </Card.Body>
         </Card>
