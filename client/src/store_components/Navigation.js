@@ -32,13 +32,13 @@ function Navigation({ serviceContent }){
               align="end"
               >
                 {/* <DropdownButton id="menu" title="Menu"> */}
-                <NavDropdown.Item style={{"color": "black"}} href="/services">Services</NavDropdown.Item>
+                <NavDropdown.Item style={{"color": themes.themes[page_theme].colors.text}} href="/services">Services</NavDropdown.Item>
                 <Dropdown.Divider/>
-                <NavDropdown.Item style={{"color": "black"}} href="/booking-request">Send Booking Request</NavDropdown.Item>
+                <NavDropdown.Item style={{"color": themes.themes[page_theme].colors.text}} href="/booking-request">Send Booking Request</NavDropdown.Item>
                 <Dropdown.Divider/>
-                <NavDropdown.Item style={{"color": "black"}} href="/messages">Send Message</NavDropdown.Item>
+                <NavDropdown.Item style={{"color": themes.themes[page_theme].colors.text}} href="/messages">Send Message</NavDropdown.Item>
                 <Dropdown.Divider/>
-                <NavDropdown.Item style={{"color": "black"}} href="/gallery">Gallery</NavDropdown.Item>
+                <NavDropdown.Item style={{"color": themes.themes[page_theme].colors.text}} href="/gallery">Gallery</NavDropdown.Item>
                 {/* </DropdownButton> */}
               </NavDropdown>
             </Nav>

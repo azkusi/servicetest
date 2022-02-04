@@ -41,7 +41,7 @@ function BackgroundImage({ serviceContent }){
         {serviceContent.service_content.page_title}
         </h1>
             <br></br>
-        <h4 style={{"font-weight": "bold", "color": text_colour, "position": "absolute", "top": "58%", "left": "20%", "z-index": "10"}}> {serviceContent.service_content.description}</h4>
+        <h4 style={{"font-weight": "bold", "color": text_colour, "position": "absolute", "top": "58%", "left": "20%", "z-index": "10"}}> {serviceContent.service_content.tagline}</h4>
 
         </div>
             )
