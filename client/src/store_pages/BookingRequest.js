@@ -13,6 +13,8 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import useGetEvents from './hooks/useGetEvents';
 import DateTimePicker from '../../node_modules/react-datetime-picker'
 
+import { useLocation, useHistory } from 'react-router-dom';
+
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 
@@ -47,9 +49,31 @@ function BookingRequest ({ serviceContent }) {
   const [bookingDate, setBookingDate] = useState(new Date())
   const [bookingDateSelected, setBookingDateSelected] = useState(null)
   const [service_requested, setService_Requested] = useState("");
+  const { pathname, hash, key } = useLocation();
+  const history = useHistory()
+
+  const today = new Date()
 
 
   const calendarRef = useRef()
+
+  // useEffect(() => {
+  //   // if not a hash link, scroll to top
+  //   console.log("pathname is: " + pathname)
+  //   if (hash === '') {
+  //     window.scrollTo(0, 0);
+  //   }
+  //   // else scroll to id
+  //   else {
+  //     setTimeout(() => {
+  //       const id = hash.replace('#', '');
+  //       const element = document.getElementById(id);
+  //       if (element) {
+  //         element.scrollIntoView({behavior: "smooth"});
+  //       }
+  //     }, 0);
+  //   }
+  // }, [pathname, hash, key]); // do this on route change
   
 
 
@@ -163,7 +187,14 @@ if(success === null){
                   click: function(){
                     calendarRef.current.getApi().changeView("timeGridWeek", date.date);
                     }
-                  } 
+                  },
+                  changeToTodayView: {
+                    text: "Today",
+                    click: function(){
+                      calendarRef.current.getApi().changeView("timeGridDay", today);
+                      }
+                    }
+                  
               }
           }
             dateClick={(date)=>{
@@ -171,23 +202,32 @@ if(success === null){
               console.log("date.dateStr is: " + date.dateStr + " type is: " + typeof(date.dateStr))
               console.log("date.date is: " + date.date.toDateString())     
               setDate(date.date)
-              calendarRef.current.getApi().changeView("timeGridDay", date.date);
+              if(calendarRef.current.getApi().view.type === "timeGridDay"){
+                const elementToScrollTo = document.getElementById('sendBookingRequest')
+                elementToScrollTo.scrollIntoView({behavior: "smooth"})
+                // history.push('#sendBookingRequest')
+              }else{
+                calendarRef.current.getApi().changeView("timeGridDay", date.date);
+              }
               //console.log("current view is: " + JSON.stringify(calendarRef.current.getApi().view))
            }}
 
            
-            headerToolbar={{
-              center: "changeToWeekView changeToMonthView",
-              left: "title",
-              right: "today prev,next"
-              
-            }}
+           headerToolbar={{
+            center: "title",
+            left: "changeToTodayView changeToWeekView changeToMonthView",
+            right: "prev,next"
+            
+          }}
           />
       </div>
       <div>
       <Card>
+        <Card.Title>
+          Send Booking Request
+        </Card.Title>
       <Card.Body>
-        <Form onSubmit={onFormSubmit}>
+        <Form id="sendBookingRequest" onSubmit={onFormSubmit}>
           <Form.Group id="name">
             <Form.Label>Name</Form.Label>
             <Form.Control type="text" ref={nameRef} placeholder="name" required />

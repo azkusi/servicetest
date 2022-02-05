@@ -150,7 +150,7 @@ function App() {
               </div>
             </Route>
   
-            <Route exact path="/booking-request">
+            <Route exact path="/send-me-a-booking-request">
             { (!content) && <Spinner/> }
               {content && <BookingRequest serviceContent={content} />}
             </Route>
@@ -165,7 +165,7 @@ function App() {
               <Gallery serviceContent={content} />
             </Route>
   
-            <Route exact path="/messages">
+            <Route exact path="/send-me-a-message">
             { (!content) && <Spinner/> }
               {content && <Messages serviceContent={content} />}
             </Route>

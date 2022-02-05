@@ -34,9 +34,9 @@ function Navigation({ serviceContent }){
                 {/* <DropdownButton id="menu" title="Menu"> */}
                 <NavDropdown.Item style={{"color": themes.themes[page_theme].colors.text}} href="/services">Services</NavDropdown.Item>
                 <Dropdown.Divider/>
-                <NavDropdown.Item style={{"color": themes.themes[page_theme].colors.text}} href="/booking-request">Send Booking Request</NavDropdown.Item>
+                <NavDropdown.Item style={{"color": themes.themes[page_theme].colors.text}} href="/send-me-a-booking-request">Send Booking Request</NavDropdown.Item>
                 <Dropdown.Divider/>
-                <NavDropdown.Item style={{"color": themes.themes[page_theme].colors.text}} href="/messages">Send Message</NavDropdown.Item>
+                <NavDropdown.Item style={{"color": themes.themes[page_theme].colors.text}} href="/send-me-a-message">Send Message</NavDropdown.Item>
                 <Dropdown.Divider/>
                 <NavDropdown.Item style={{"color": themes.themes[page_theme].colors.text}} href="/gallery">Gallery</NavDropdown.Item>
                 {/* </DropdownButton> */}
@@ -63,14 +63,14 @@ function Navigation({ serviceContent }){
               </Link>
             {/* </li> */}
             {/* <li style={{"padding-left": "15px", "padding-right": "15px", "listStyle": "none"}}> */}
-              <Link style={{ textDecoration: 'none', "color": themes.themes[page_theme].colors.text, "font-weight": "bold" }} to="/booking-request">
+              <Link style={{ textDecoration: 'none', "color": themes.themes[page_theme].colors.text, "font-weight": "bold" }} to="/send-me-a-booking-request">
                   Availability & Booking
               </Link>
             {/* </li> */}
             {/* <li style={{"padding-left": "15px", "padding-right": "15px", "listStyle": "none"}}> */}
             {/* </li> */}
             {/* <li style={{"padding-left": "15px", "padding-right": "15px", "listStyle": "none"}}> */}
-              <Link style={{ textDecoration: 'none', "color": themes.themes[page_theme].colors.text, "font-weight": "bold" }} to="/messages">
+              <Link style={{ textDecoration: 'none', "color": themes.themes[page_theme].colors.text, "font-weight": "bold" }} to="/send-me-a-message">
                   Send Message
               </Link>
             {/* </li> */}

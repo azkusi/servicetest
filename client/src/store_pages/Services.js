@@ -70,11 +70,11 @@ function Services({ serviceContent }){
                                     
                                                         <br/>
                                                     <Card.Subtitle> 
-                                                        Price: {service.price}
+                                                        Price: £{service.price}
                                                     </Card.Subtitle>
                                                     <br/>
                                                     <Card.Subtitle>
-                                                    Duration: {service.duration}
+                                                    Duration: {service.duration} hour(s)
                                                     </Card.Subtitle>
                                                 
                                                     <br/>
