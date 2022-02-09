@@ -30,8 +30,8 @@ function Conversations({match, location}) {
     const {width, height} = useWindowSize()
     const [screenW, setScreenW] = useState(0.7*width)
 
-    const msgStyling = {"client": {"padding": "5px", "border-radius": "5px", "background-color": "#0574DD", "color": "white", "maxWidth": `${0.4*width}px`, "margin-right":"5px", "margin-left": "auto"},
-    "provider": {"padding": "5px", "border-radius": "5px", "background-color": "white", "color": "black", "maxWidth": `${0.4*width}px`, "margin-left":"5px", "margin-right": "auto"} }
+    const msgStyling = {"client": {"padding": "5px", "border-radius": "5px", "background-color": "#0574DD", "color": "white", "maxWidth": `${0.8*screenW}px`, "margin-right":"5px", "margin-left": "auto"},
+    "provider": {"padding": "5px", "border-radius": "5px", "background-color": "white", "color": "black", "maxWidth": `${0.8*screenW}px`, "margin-left":"5px", "margin-right": "auto"} }
 
     const provider_Name = new URLSearchParams(search).get('provider')
 
@@ -97,8 +97,8 @@ function Conversations({match, location}) {
         return(  
           <div style={{"maxHeight": height}}>   
           <ReturnHome/>
-            <div style={{"display": "grid", "place-items": "center", "align-content": "center"}}>
-                <h2 style={{"position": "absolute", "top": "0"}}> Your Messages</h2>
+            <div style={{"display": "grid", "place-items": "center", "align-content": "center", "paddingLeft": "5px"}}>
+                {/* <h2 style={{"position": "absolute", "top": "0", "padding-bottom": "5px"}}> Your Messages</h2> */}
 
                 {messages ?
                 <>
