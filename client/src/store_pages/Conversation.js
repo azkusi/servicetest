@@ -102,7 +102,7 @@ function Conversations({match, location}) {
 
                 {messages ?
                 <>
-                  <Card style={{"width": `${screenW}px`, "height": `${0.7*height}px`, "position": "absolute", "maxHeight": `${0.7*height}px`, "overflowY": "auto", "top":"10%" }}>
+                  <Card style={{"width": `${screenW}px`, "height": `${0.7*height}px`, "position": "absolute", "maxHeight": `${0.7*height}px`, "overflowY": "auto", "top":"12%" }}>
 
                         {messages.map((item, index)=>{
                         return(
