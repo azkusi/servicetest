@@ -97,7 +97,7 @@ function Conversations({match, location}) {
         return(  
           <div style={{"maxHeight": height}}>   
           <ReturnHome/>
-            <div style={{"display": "grid", "place-items": "center", "align-content": "center", "paddingLeft": "5px"}}>
+            <div style={{"display": "grid", "place-items": "center", "align-content": "center", "paddingLeft": "10px"}}>
                 {/* <h2 style={{"position": "absolute", "top": "0", "padding-bottom": "5px"}}> Your Messages</h2> */}
 
                 {messages ?
