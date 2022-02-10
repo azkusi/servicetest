@@ -26,9 +26,11 @@ function Navigation({ serviceContent }){
           <Navbar.Toggle aria-controls="navbar-dark-example" />
           <Navbar.Collapse style={{"z-index": "20"}} id="navbar-dark-example">
             <Nav className='topnav-right'>
-              <NavDropdown style={{"color": themes.themes[page_theme].colors.text}}
+              <NavDropdown
               id="nav-dropdown-dark-example"
-              title="Menu"
+              title={
+                <span style={{"color": themes.themes[page_theme].colors.text}}>Menu</span>
+              }
               align="end"
               >
                 {/* <DropdownButton id="menu" title="Menu"> */}
