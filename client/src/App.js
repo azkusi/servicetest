@@ -57,11 +57,16 @@ function App() {
 
 
   useEffect(() => {
-    firebase.auth().signInAnonymously().then(()=>{
+    if(firebase.auth().currentUser){
       getSubdomain()
-    },()=>{
-      setError(true)
-    })
+    }else{
+      firebase.auth().signInAnonymously().then(()=>{
+        getSubdomain()
+      },()=>{
+        setError(true)
+      })
+    }
+    
     
 
   }, [])
