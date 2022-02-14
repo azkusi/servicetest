@@ -3,7 +3,7 @@
 //=========================================================================
 
 import React, { useRef, useState, useEffect } from "react";
-import { Alert, Form, Button, Card } from "react-bootstrap";
+import { Alert, Form, Button, Card, Container } from "react-bootstrap";
 
 import FullCalendar from '@fullcalendar/react'; // must go before plugins
 import dayGridPlugin from '@fullcalendar/daygrid'; // a plugin!
@@ -13,6 +13,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import useGetEvents from './hooks/useGetEvents';
 import DateTimePicker from '../../node_modules/react-datetime-picker'
 
+import useWindowSize from './hooks/useWindowSize';
 import { useLocation, useHistory } from 'react-router-dom';
 
 import firebase from "firebase/compat/app";
@@ -54,7 +55,8 @@ function BookingRequest ({ serviceContent }) {
 
   const today = new Date()
 
-
+  const {width, height} = useWindowSize()
+  const [screenW, setScreenW] = useState(0.8)
   const calendarRef = useRef()
 
   // useEffect(() => {
@@ -88,8 +90,19 @@ function BookingRequest ({ serviceContent }) {
           }
       }  
   }
+
+  if(width < 700){
+    if(width < 500){
+      setScreenW(0.96)
+    }else{
+      setScreenW(0.8)
+    }
     
-}, [service_requested])
+  }else{
+    setScreenW(0.6)
+  }
+    
+}, [service_requested, width])
  
  
   async function onFormSubmit (e){
@@ -165,63 +178,80 @@ if(success === null){
   return (
     <>
       <div>
-        <h1>Send a Booking Request</h1> 
+        <h1 style={{"textAlign": "center"}}>Send a Booking Request</h1> 
       </div>
+      <br/>
+      <br/>
+      {/* ${screenW*width}px */}
 
-      <div>
-      <FullCalendar
-            plugins={[ dayGridPlugin, interactionPlugin, listPlugin, timeGridPlugin ]}
-            initialView={initialView}
-            events={provider_events}
-            initialDate={initialDate}
-            ref={calendarRef}
-            customButtons={
-              {
-                changeToMonthView: {
-                  text: "Month",
-                  click: function () {
-                    calendarRef.current.getApi().changeView("dayGridMonth", date.date);
-                  }
-                }, changeToWeekView: {
-                  text: "Week",
-                  click: function(){
-                    calendarRef.current.getApi().changeView("timeGridWeek", date.date);
+      <Container className="justify-content-center" style={{"width": `${screenW*width}px`, "height": `0.5*${height}px`}}>
+        <FullCalendar
+              plugins={[ dayGridPlugin, interactionPlugin, listPlugin, timeGridPlugin ]}
+              initialView={initialView}
+              events={provider_events}
+              initialDate={initialDate}
+              ref={calendarRef}
+              customButtons={
+                {
+                  changeToMonthView: {
+                    text: "Month",
+                    click: function () {
+                      calendarRef.current.getApi().changeView("dayGridMonth", date.date);
                     }
-                  },
-                  changeToTodayView: {
-                    text: "Today",
+                  }, changeToWeekView: {
+                    text: "Week",
                     click: function(){
-                      calendarRef.current.getApi().changeView("timeGridDay", today);
+                      calendarRef.current.getApi().changeView("timeGridWeek", date.date);
                       }
-                    }
-                  
-              }
-          }
-            dateClick={(date)=>{
-              console.log("Full Calendar API date is: " + date.date + " type is: " + typeof(date.date))
-              console.log("date.dateStr is: " + date.dateStr + " type is: " + typeof(date.dateStr))
-              console.log("date.date is: " + date.date.toDateString())     
-              setDate(date.date)
-              if(calendarRef.current.getApi().view.type === "timeGridDay"){
-                const elementToScrollTo = document.getElementById('sendBookingRequest')
-                elementToScrollTo.scrollIntoView({behavior: "smooth"})
-                // history.push('#sendBookingRequest')
-              }else{
-                calendarRef.current.getApi().changeView("timeGridDay", date.date);
-              }
-              //console.log("current view is: " + JSON.stringify(calendarRef.current.getApi().view))
-           }}
+                    },
+                    changeToTodayView: {
+                      text: "Today",
+                      click: function(){
+                        calendarRef.current.getApi().changeView("timeGridDay", today);
+                        }
+                      }
+                    
+                }
+            }
+              dateClick={(date)=>{
+                console.log("Full Calendar API date is: " + date.date + " type is: " + typeof(date.date))
+                console.log("date.dateStr is: " + date.dateStr + " type is: " + typeof(date.dateStr))
+                console.log("date.date is: " + date.date.toDateString())     
+                setDate(date.date)
+                if(calendarRef.current.getApi().view.type === "timeGridDay"){
+                  const elementToScrollTo = document.getElementById('sendBookingRequest')
+                  elementToScrollTo.scrollIntoView({behavior: "smooth"})
+                  // history.push('#sendBookingRequest')
+                }else{
+                  calendarRef.current.getApi().changeView("timeGridDay", date.date);
+                }
+                //console.log("current view is: " + JSON.stringify(calendarRef.current.getApi().view))
+            }}
 
-           
-           headerToolbar={{
-            center: "title",
-            left: "changeToTodayView changeToWeekView changeToMonthView",
-            right: "prev,next"
             
-          }}
+            headerToolbar={{
+              center: "title",
+              left: "changeToTodayView,changeToWeekView,changeToMonthView prev,next",
+              right: ""
+            
+            }}
+
+            views={{
+              timeGridDay:{
+                titleFormat:{
+                  month: 'short',
+                  year: 'numeric',
+                  day: 'numeric',
+                  weekday: 'short'
+                }
+              }
+              
+            }}
           />
-      </div>
-      <div>
+      </Container>
+      <br/>
+      <br/>
+      <Container className="justify-content-center" style={{"maxWidth": `${screenW*width}px`}}>
       <Card>
         <Card.Title>
           Send Booking Request
@@ -230,12 +260,12 @@ if(success === null){
         <Form id="sendBookingRequest" onSubmit={onFormSubmit}>
           <Form.Group id="name">
             <Form.Label>Name</Form.Label>
-            <Form.Control type="text" ref={nameRef} placeholder="name" required />
+            <Form.Control type="text" ref={nameRef} placeholder="Name" required />
           </Form.Group>
 
           <Form.Group id="email">
             <Form.Label>Email</Form.Label>
-            <Form.Control type="email" ref={emailRef} placeholder="email" required />
+            <Form.Control type="email" ref={emailRef} placeholder="Email" required />
           </Form.Group>
 
           <Form.Label>Select Service</Form.Label>
@@ -281,12 +311,13 @@ if(success === null){
             <Form.Label>Message</Form.Label>
             <Form.Control type="text" ref={messageRef} placeholder="Type message" />
           </Form.Group>
+          <br/>
           <Button type="submit">Submit Booking Request</Button>
 
         </Form>
         </Card.Body>
         </Card>
-      </div>
+      </Container>
       </>
       //
       //start working on cloud function to send email to serviceProvider and to client
@@ -307,7 +338,7 @@ else{
         We will send you an email when {serviceContent.service_content.page_title} responds to your message.
       </Alert> :
        <Alert variant="danger">
-       Error occurred, please contact support
+       Error occurred, please contact support at support@servviio.com
        <br/>
      </Alert>} 
     </div>

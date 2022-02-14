@@ -121,7 +121,7 @@ function Messages ({ serviceContent }) {
         We will send you an email when {serviceContent.service_content.page_title} responds to your message.
       </Alert>   :
         <Alert variant="danger">
-        Error occurred, please contact support
+        Error occurred, please contact support at support@servviio.com
         <br/>
       </Alert>
         }

@@ -167,7 +167,7 @@ function App() {
   
             <Route exact path="/gallery">
             { (!content) && <Spinner/> }
-              <Gallery serviceContent={content} />
+              {content && <Gallery serviceContent={content} />}
             </Route>
   
             <Route exact path="/send-me-a-message">
