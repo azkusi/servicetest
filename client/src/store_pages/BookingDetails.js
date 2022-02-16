@@ -128,6 +128,12 @@ function BookingDetails({match, location}) {
                                         />
                                     </Card.Text>
                                 </Card.Body>
+
+                                {/* <div>
+                                    <Button variant='secondary' onClick={()=>{setShowButtons(true)}}> Cancel </Button>
+                                </div> */}
+                                
+
                             </Card>
                             <br/>
         
