@@ -8,7 +8,7 @@ import React, {useState, useEffect} from 'react';
 import Gallery from './store_pages/Gallery';
 import Services from './store_pages/Services';
 import Navigation from './store_components/Navigation';
-import BackgroundImage from './store_components/BackgroundImage';
+import HomePage from './store_components/HomePage';
 
 import Calendar from './store_pages/Calendar';
 import BookingRequest from './store_pages/BookingRequest';
@@ -145,7 +145,7 @@ function App() {
   
             <Route exact path="/">
             { !content && <Spinner/> }
-              {content && <BackgroundImage serviceContent={content}/>}
+              {content && <HomePage serviceContent={content}/>}
             </Route>
   
             <Route exact path="/services">

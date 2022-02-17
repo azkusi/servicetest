@@ -9,6 +9,8 @@ import ImageGrid from './components/ImageGrid';
 import Modal from './components/Modal';
 import { Spinner } from "react-bootstrap";
 
+import mixpanel from 'mixpanel-browser';
+
 let db;
 
 if (!firebase.apps.length) {
@@ -24,13 +26,20 @@ export default function Gallery({serviceContent}) {
     const [selectedImg, setSelectedImg] = useState(null);
     // const [providerName, setProviderName] = useState(null)
     const providerName = serviceContent.site_name
+    
+    let subdomains = window.location.hostname.toString()
 
 
 
-    // useEffect(()=>{
-        
+    useEffect(()=>{
+      mixpanel.init('a237f239cb8cd02fafc64614c70bb36b')
+      if(subdomains.includes('localhost')){
+        mixpanel.track('dev_client_side_gallery_page_visit')
+      }else{
+        mixpanel.track('client_side_gallery_page_visit')
+      }
+    }, [])
 
-    // }, [])
 
     if(providerName === null){
         return(

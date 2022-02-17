@@ -7,7 +7,7 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import {config} from '../firebase';
 import { Card, Button, Alert, Spinner, ListGroup, Modal, Form } from "react-bootstrap";
-
+import mixpanel from 'mixpanel-browser';
 
 
 let db;
@@ -26,6 +26,20 @@ function Services({ serviceContent }){
     console.log("Calendar rerendered")
     console.log("admin_data in Calendar: " + serviceContent.site_name)
     const services = useServiceList(serviceContent.site_name)
+
+
+    let subdomains = window.location.hostname.toString()
+
+
+
+    useEffect(()=>{
+      mixpanel.init('a237f239cb8cd02fafc64614c70bb36b')
+      if(subdomains.includes('localhost')){
+        mixpanel.track('dev_client_side_services_page_visit')
+      }else{
+        mixpanel.track('client_side_services_page_visit')
+      }
+    }, [])
 
     
     if(serviceContent.service_content.service_categories.length !== 0){

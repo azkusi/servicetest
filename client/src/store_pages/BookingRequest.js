@@ -20,6 +20,7 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 
 import config from '../firebase';
+import mixpanel from 'mixpanel-browser';
 
 let db;
 
@@ -59,23 +60,18 @@ function BookingRequest ({ serviceContent }) {
   const [screenW, setScreenW] = useState(0.8)
   const calendarRef = useRef()
 
-  // useEffect(() => {
-  //   // if not a hash link, scroll to top
-  //   console.log("pathname is: " + pathname)
-  //   if (hash === '') {
-  //     window.scrollTo(0, 0);
-  //   }
-  //   // else scroll to id
-  //   else {
-  //     setTimeout(() => {
-  //       const id = hash.replace('#', '');
-  //       const element = document.getElementById(id);
-  //       if (element) {
-  //         element.scrollIntoView({behavior: "smooth"});
-  //       }
-  //     }, 0);
-  //   }
-  // }, [pathname, hash, key]); // do this on route change
+  let subdomains = window.location.hostname.toString()
+
+
+
+    useEffect(()=>{
+      mixpanel.init('a237f239cb8cd02fafc64614c70bb36b')
+      if(subdomains.includes('localhost')){
+        mixpanel.track('dev_client_side_booking_request_page_visit')
+      }else{
+        mixpanel.track('client_side_booking_request_page_visit')
+      }
+    }, [])
   
 
 

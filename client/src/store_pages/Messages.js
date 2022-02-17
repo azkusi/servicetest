@@ -3,7 +3,7 @@
 //=========================================================================
 
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Form, Button, Card, Alert } from "react-bootstrap";
 // import Alert from '@mui/material/Alert';
 
@@ -12,6 +12,7 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 
 import config from '../firebase';
+import mixpanel from 'mixpanel-browser';
 
 let db;
 
@@ -30,9 +31,20 @@ function Messages ({ serviceContent }) {
   const nameRef = useRef()
   const messageRef = useRef()
   const emailRef = useRef()
-  // const [serviceProviderData, setServiceProviderData] = useState(serviceContent);
-  // const [value, setValue] = useState()
-  // const onInput = ({target:{value}}) => setValue(value)
+  
+  
+  let subdomains = window.location.hostname.toString()
+
+
+
+    useEffect(()=>{
+      mixpanel.init('a237f239cb8cd02fafc64614c70bb36b')
+      if(subdomains.includes('localhost')){
+        mixpanel.track('dev_client_side_messages_page_visit')
+      }else{
+        mixpanel.track('client_side_messages_page_visit')
+      }
+    }, [])
  
  
   async function onFormSubmit (e){
@@ -40,9 +52,8 @@ function Messages ({ serviceContent }) {
     const nameSent = nameRef.current.value;
     const emailSent = emailRef.current.value
     const messageSent = messageRef.current.value
-    // console.log("Name: " + nameSent)
-    // console.log("Email: " + emailSent)
-    // console.log("Message: " + messageSent)
+    
+
     try{
       const currentTime = Date.now()
       const convoref = db.collection('serviceProviders').doc(serviceContent.site_name).collection('conversations').doc()
