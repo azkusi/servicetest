@@ -109,23 +109,17 @@ function BookingDetails({match, location}) {
                                     </Card.Title>
                                     <Card.Text>
                                         Service: {bookingdetails.service_requested}
-                                        Notes: {bookingdetails.service_notes}
-                                        <Form.Label>Event Start</Form.Label>
-                                        <Card.Text
-                                            type="text"
-                                            disabled={true}
-                                            // ref={eventTodayNotesRef}
-                                            placeholder={`${new Date(bookingdetails.startTime).toString()}`}
-                                        />
                                         <br/>
-
-                                        <Form.Label>Event End</Form.Label>
-                                        <Card.Text 
-                                        type="text"
-                                        disabled={true}
-                                        // ref={eventTodayNotesRef}
-                                        placeholder={`${new Date(bookingdetails.endTime).toString()}`}
-                                        />
+                                        Notes: {bookingdetails.service_notes}
+                                        <br/>
+                                        <Form.Label>Event Start:</Form.Label>
+                                        <br/>
+                                        {`${new Date(bookingdetails.startTime).toString()}`}
+                                        <br/>
+                                        <br/>
+                                        <Form.Label>Event End:</Form.Label>
+                                        <br/>
+                                        {`${new Date(bookingdetails.endTime).toString()}`}
                                     </Card.Text>
                                 </Card.Body>
 
