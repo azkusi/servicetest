@@ -114,12 +114,12 @@ function BookingDetails({match, location}) {
                                         <br/>
                                         <Form.Label>Event Start:</Form.Label>
                                         <br/>
-                                        {`${new Date(bookingdetails.startTime).toString()}`}
+                                        {`${new Date(bookingdetails.startTime).toDateString() + " " + new Date(bookingdetails.startTime).getHours() + ":" + (new Date(bookingdetails.startTime).getMinutes() < 10 ? `0${new Date(bookingdetails.startTime).getMinutes()}` : new Date(bookingdetails.startTime).getMinutes()) }`}
                                         <br/>
                                         <br/>
                                         <Form.Label>Event End:</Form.Label>
                                         <br/>
-                                        {`${new Date(bookingdetails.endTime).toString()}`}
+                                        {`${new Date(bookingdetails.endTime).toDateString() + " " + new Date(bookingdetails.endTime).getHours() + ":" + (new Date(bookingdetails.endTime).getMinutes() < 10 ? `0${new Date(bookingdetails.endTime).getMinutes()}` : new Date(bookingdetails.endTime).getMinutes()) }`}
                                     </Card.Text>
                                 </Card.Body>
 
